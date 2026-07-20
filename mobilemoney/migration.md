@@ -8,8 +8,6 @@ php spark migrate:refresh
 # Migration:
 php spark migrate
 
-<!-- php spark db:seed PrefixeSeeder -->
-
 php spark db:seed DatabaseSeeder
 
 # Excecute donnee
