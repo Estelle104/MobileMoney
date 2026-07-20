@@ -17,4 +17,13 @@ class TypeOperation extends Model
     {
         return $this->where('libelle', $libelle)->first();
     }
+
+    public function getIdParLibelle(string $libelle): ?int
+    {
+        $type = $this
+            ->where('libelle', $libelle)
+            ->first();
+
+        return $type ? $type['id'] : null;
+    }
 }
