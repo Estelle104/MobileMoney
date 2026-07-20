@@ -42,31 +42,31 @@
 - Vue
   - (ok) '/operateur/login' : formulaire email/mdp + affichage flashdata erreur
 
-### Configuration des prefixes
+### (ok) Configuration des prefixes
 
 - Route
-  - () GET '/operateur/configuration/list'
-  - () GET '/operateur/configuration/creer'
-  - () POST '/operateur/configuration/enregistrer'
-  - () GET '/operateur/configuration/modifier/(:num)'
-  - () POST '/operateur/configuration/update/(:num)'
-  - () POST '/operateur/configuration/supprimer/(:num)'
+  - (ok) GET '/operateur/configuration/list'
+  - (ok) GET '/operateur/configuration/creer'
+  - (ok) POST '/operateur/configuration/enregistrer'
+  - (ok) GET '/operateur/configuration/modifier/(:num)'
+  - (ok) POST '/operateur/configuration/mettreajour/(:num)'
+  - (ok) POST '/operateur/configuration/supprimer/(:num)'
 
 - Model ('PrefixeModel')
-  - () Validation : 'code' exactement 3 chiffres, unique globalement
-  - () CRUD  et 'findAllByOperateur(id_operateur)'
-  - () Lors de la modification d'un 'code' : mettre a jour tous les 'client.numero' avec ce code
-  - () Avant suppression : verifier qu'aucun 'client' n'est rattache a ce prefixe  (confiramtion)
+  - (ok) Validation : 'code' exactement 3 chiffres, unique globalement
+  - (ok) CRUD  et 'findAllByOperateur(id_operateur)'
+  - (ok) Lors de la modification d'un 'code' : mettre a jour tous les 'client.numero' avec ce code
+  - (ok) Avant suppression : verifier qu'aucun 'client' n'est rattache a ce prefixe  (confiramtion)
 
 - Controller
-  - () 'list()' : liste des prefixes de l'operateur connecte
-  - () 'creer()' / 'enregistrer()' : validation formulaire + insertion (forcer 'id_operateur' = session, pas depuis le formulaire)
-  - () 'modifier($id)' / 'update($id)' : verifie que le prefixe appartient bien a l'operateur connecte avant update
-  - () 'supprimer($id)' : meme verification avant suppression
+  - (ok) 'list()' : liste des prefixes de l'operateur connecte
+  - (ok) 'creer()' / 'enregistrer()' : validation formulaire + insertion (forcer 'id_operateur' = session, pas depuis le formulaire)
+  - (ok) 'modifier($id)' / 'update($id)' : verifie que le prefixe appartient bien a l'operateur connecte avant update
+  - (ok) 'supprimer($id)' : meme verification avant suppression
 
 - Vue
-  - () Liste des prefixes (tableau) avec boutons Modifier/Supprimer + confirmation
-  - () Formulaire de creation/modification avec affichage des erreurs de validation
+  - (ok) Liste des prefixes (tableau) avec boutons Modifier/Supprimer + confirmation
+  - (ok) Formulaire de creation/modification 
 
 
 ### Types d'operations et bareme de frais

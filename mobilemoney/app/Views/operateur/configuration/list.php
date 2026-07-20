@@ -1,40 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des configurations</title>
-</head>
-<body>
-    <div class="content">
-        <h1>Liste des configurations</h1>
-        <a href="<?= site_url('operateur/configuration/creer') ?>">Créer une nouvelle configuration</a>
-        <table border="1">
-            <thead>
+<?= $this->extend('layouts/operateur') ?>
+
+<?= $this->section('content') ?>
+
+<h1>Configuration des prefixes</h1>
+
+<a href="<?= site_url('operateur/configuration/creer') ?>" class="btn btn-primary">
+    + Ajouter un prefixe
+</a>
+
+<?php if (session()->getFlashdata('success')): ?>
+    <div class="alert alert-success"><?= esc(session()->getFlashdata('success')) ?></div>
+<?php endif; ?>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-error"><?= esc(session()->getFlashdata('error')) ?></div>
+<?php endif; ?>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (empty($prefixes)): ?>
+            <tr>
+                <td colspan="2">Aucun prefixe configure</td>
+            </tr>
+        <?php else: ?>
+            <?php foreach ($prefixes as $prefixe): ?>
                 <tr>
-                    <th>ID</th>
-                    <th>Code</th>
-                    <th>Opérateur</th>
-                    <th>Actions</th>
+                    <td><?= esc($prefixe['code']) ?></td>
+                    <td>
+                        <a href="<?= site_url('operateur/configuration/modifier/' . $prefixe['id']) ?>">
+                            Modifier
+                        </a>
+
+                        <form action="<?= site_url('operateur/configuration/supprimer/' . $prefixe['id']) ?>"
+                            method="post"
+                            style="display:inline"
+                            onsubmit="return confirm('Confirmer la suppression du prefixe <?= esc($prefixe['code']) ?> ?');">
+                            <?= csrf_field() ?>
+                            <button type="submit">Supprimer</button>
+                        </form>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($prefixes as $config) : ?>
-                    <tr>
-                        <td><?= esc($config['id']) ?></td>
-                        <td><?= esc($config['code']) ?></td>
-                        <td><?= esc($config['id_operateur']) ?></td>
-                        <td>
-                            <a href="<?= site_url('operateur/configuration/modifier/' . $config['id']) ?>">Modifier</a> |
-                            <form action="<?= site_url('operateur/configuration/supprimer/' . $config['id']) ?>" method="post" style="display:inline;">
-                                <?= csrf_field() ?>
-                                <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette configuration ?')">Supprimer</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-</body>
-</html>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </tbody>
+</table>
+
+<?= $this->endSection() ?>

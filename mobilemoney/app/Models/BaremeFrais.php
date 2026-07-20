@@ -11,14 +11,11 @@ class BaremeFrais extends Model
 
     protected $validationRules = [
         'id_type_operation' => 'required|integer',
-        'montant_min'       => 'required|decimal',
-        'montant_max'       => 'required|decimal',
-        'frais'             => 'required|decimal',
+        'montant_min'       => 'required|decimal|greater_than_equal_to[0]',
+        'montant_max'       => 'required|decimal|valid_montant_max[montant_min]',
+        'frais'             => 'required|decimal|greater_than_equal_to[0]',
     ];
 
-    /**
-     * Retourne toutes les tranches d'un type d'opération, triées.
-     */
     public function findAllByType(int $idTypeOperation): array
     {
         return $this->where('id_type_operation', $idTypeOperation)
@@ -27,7 +24,8 @@ class BaremeFrais extends Model
     }
 
     /**
-     * Calcule le frais applicable pour un montant et un type d'opération donnés.
+     * Retourne le montant des frais pour un type d'opération et un montant donné.
+     * Retourne null si le montant est hors barème.
      */
     public function getFraisParMontant(int $idTypeOperation, float $montant): ?float
     {
@@ -39,16 +37,13 @@ class BaremeFrais extends Model
         return $tranche ? (float) $tranche['frais'] : null; // null = hors barème
     }
 
-    /**
-     * Vérifie qu'une nouvelle tranche ne chevauche pas une tranche existante.
-     * $ignoreId permet d'exclure la tranche elle-même en cas de modification.
-     */
+
     public function chevauche(int $idTypeOperation, float $min, float $max, ?int $ignoreId = null): bool
     {
         $builder = $this->where('id_type_operation', $idTypeOperation)
             ->groupStart()
-                ->where('montant_min <=', $max)
-                ->where('montant_max >=', $min)
+            ->where('montant_min <=', $max)
+            ->where('montant_max >=', $min)
             ->groupEnd();
 
         if ($ignoreId !== null) {
