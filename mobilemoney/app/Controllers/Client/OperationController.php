@@ -473,4 +473,25 @@ class OperationController extends BaseController
             ]
         );
     }
+    public function calculFraisAjax()
+    {
+        $montant = (float)$this->request->getPost('montant');
+        $type = $this->request->getPost('type_operation');
+
+        if ($montant <= 0 || !$type) {
+            return $this->response->setJSON(['frais' => 0]);
+        }
+
+        $typeModel = new TypeOperation();
+        $baremeModel = new BaremeFrais();
+
+        $idType = $typeModel->getIdParLibelle($type);
+        if (!$idType) {
+            return $this->response->setJSON(['frais' => 0]);
+        }
+
+        $frais = $baremeModel->getFraisParMontant($idType, $montant);
+        
+        return $this->response->setJSON(['frais' => $frais === null ? 0 : $frais]);
+    }
 }

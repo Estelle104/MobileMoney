@@ -73,4 +73,7 @@ $routes->group('client', ['filter' => 'authClient'], function ($routes) {
     $routes->post('transfert/valider', 'Client\OperationController::validerTransfert');
 
     $routes->get('historique', 'Client\OperationController::historique');
+    
+    // AJAX
+    $routes->post('calcul-frais', 'Client\OperationController::calculFraisAjax');
 });
