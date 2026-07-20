@@ -67,19 +67,30 @@
                 </a>
             </div>
 
-            <div class="col-md-6 col-lg-8">
+            <div class="col-md-6 col-lg-4">
+                <a href="<?= site_url('client/transfert-multiple') ?>" class="text-decoration-none">
+                    <div class="card p-4 text-center h-100 card-hover">
+                        <div class="mb-3">
+                            <div class="bg-info bg-opacity-10 text-info rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="bi bi-send-plus fs-3"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1">Transfert multiple</h5>
+                        <p class="text-secondary small mb-0">Diviser un montant entre plusieurs numéros</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
                 <a href="<?= site_url('client/historique') ?>" class="text-decoration-none">
-                    <div class="card p-4 h-100 card-hover d-flex flex-row align-items-center">
-                        <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-inline-flex align-items-center justify-content-center me-4" style="width: 60px; height: 60px; min-width: 60px;">
+                    <div class="card p-4 text-center h-100 card-hover">
+                        <div class="mb-3">
+                            <div class="bg-secondary bg-opacity-10 text-secondary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
                             <i class="bi bi-clock-history fs-3"></i>
+                            </div>
                         </div>
-                        <div>
-                            <h5 class="fw-bold text-dark mb-1">Historique des transactions</h5>
-                            <p class="text-secondary small mb-0">Retrouvez la trace de toutes vos opérations passées (dépôts, retraits, transferts).</p>
-                        </div>
-                        <div class="ms-auto d-none d-sm-block">
-                            <i class="bi bi-chevron-right text-secondary fs-4"></i>
-                        </div>
+                        <h5 class="fw-bold text-dark mb-1">Historique</h5>
+                        <p class="text-secondary small mb-0">Voir toutes les opérations passées</p>
                     </div>
                 </a>
             </div>

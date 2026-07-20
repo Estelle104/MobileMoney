@@ -24,7 +24,7 @@
                     </div>
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-3">
                     <label for="montant" class="form-label text-label">Montant à envoyer</label>
                     <div class="input-group">
                         <span class="input-group-text border-end-0 bg-transparent text-secondary">Ar</span>
@@ -32,9 +32,33 @@
                     </div>
                 </div>
 
-                <div class="mb-4 d-flex justify-content-between align-items-center p-3 rounded-3" style="background-color: #F8FAFC; border: 1px dashed #CBD5E1;">
-                    <span class="text-secondary fw-medium small">Frais estimés</span>
-                    <span class="fs-5 fw-bold text-dark"><span id="frais">0</span> <span class="fs-6 fw-normal text-secondary">Ar</span></span>
+                <div id="operatorInfo" class="alert alert-secondary border-0 py-2 px-3 small mb-3 d-none"></div>
+
+                <div id="retraitOption" class="form-check form-switch mb-3 d-none">
+                    <input class="form-check-input" type="checkbox" role="switch" name="frais_retrait_inclus" id="frais_retrait_inclus" value="1">
+                    <label class="form-check-label fw-medium" for="frais_retrait_inclus">
+                        Inclure les frais de retrait
+                    </label>
+                </div>
+
+                <div class="mb-4 p-3 rounded-3" style="background-color: #F8FAFC; border: 1px dashed #CBD5E1;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-secondary fw-medium small">Frais de transfert</span>
+                        <span class="fw-bold text-dark"><span id="fraisTransfert">0</span> Ar</span>
+                    </div>
+                    <div id="commissionRow" class="d-flex justify-content-between align-items-center mb-2 d-none">
+                        <span class="text-secondary fw-medium small">Commission autre opérateur</span>
+                        <span class="fw-bold text-dark"><span id="commission">0</span> Ar</span>
+                    </div>
+                    <div id="fraisRetraitRow" class="d-flex justify-content-between align-items-center mb-2 d-none">
+                        <span class="text-secondary fw-medium small">Frais de retrait inclus</span>
+                        <span class="fw-bold text-dark"><span id="fraisRetrait">0</span> Ar</span>
+                    </div>
+                    <hr class="my-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-secondary fw-medium small">Total débité</span>
+                        <span class="fs-5 fw-bold text-dark"><span id="totalDebite">0</span> <span class="fs-6 fw-normal text-secondary">Ar</span></span>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 py-3 mb-3">
@@ -55,21 +79,36 @@
 document.addEventListener('DOMContentLoaded', function() {
     const numeroInput = document.getElementById('numero_destinataire');
     const montantInput = document.getElementById('montant');
-    const fraisSpan = document.getElementById('frais');
+    const fraisTransfertSpan = document.getElementById('fraisTransfert');
+    const fraisRetraitSpan = document.getElementById('fraisRetrait');
+    const commissionSpan = document.getElementById('commission');
+    const totalDebiteSpan = document.getElementById('totalDebite');
+    const retraitOption = document.getElementById('retraitOption');
+    const retraitCheckbox = document.getElementById('frais_retrait_inclus');
+    const operatorInfo = document.getElementById('operatorInfo');
+    const commissionRow = document.getElementById('commissionRow');
+    const fraisRetraitRow = document.getElementById('fraisRetraitRow');
     let timeout = null;
 
-    numeroInput.addEventListener('input', function() {
-        this.value = this.value.replace(/\D/g, '');
-    });
+    function formatAmount(amount) {
+        return new Intl.NumberFormat('fr-FR').format(Number(amount || 0));
+    }
 
-    montantInput.addEventListener('input', function(e) {
-        this.value = this.value.replace(/[^0-9]/g, '');
+    function calculateFrais() {
+        const montant = montantInput.value;
+        const numero = numeroInput.value;
         
         clearTimeout(timeout);
-        const montant = this.value;
         
         if (montant === '' || montant == 0) {
-            fraisSpan.textContent = '0';
+            fraisTransfertSpan.textContent = '0';
+            fraisRetraitSpan.textContent = '0';
+            commissionSpan.textContent = '0';
+            totalDebiteSpan.textContent = '0';
+            operatorInfo.classList.add('d-none');
+            retraitOption.classList.add('d-none');
+            commissionRow.classList.add('d-none');
+            fraisRetraitRow.classList.add('d-none');
             return;
         }
 
@@ -83,18 +122,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: new URLSearchParams({
                     '<?= csrf_token() ?>': '<?= csrf_hash() ?>',
                     'montant': montant,
-                    'type_operation': 'transfert'
+                    'numero_destinataire': numero,
+                    'type_operation': 'transfert',
+                    'frais_retrait_inclus': retraitCheckbox.checked ? '1' : ''
                 })
             })
             .then(response => response.json())
             .then(data => {
-                if (data.frais !== undefined) {
-                    fraisSpan.textContent = new Intl.NumberFormat('fr-FR').format(data.frais);
+                fraisTransfertSpan.textContent = formatAmount(data.frais_transfert ?? data.frais);
+                fraisRetraitSpan.textContent = formatAmount(data.frais_retrait);
+                commissionSpan.textContent = formatAmount(data.commission);
+                totalDebiteSpan.textContent = formatAmount(Number(montant || 0) + Number(data.total || 0));
+
+                const hasNumero = numero.length >= 3;
+                operatorInfo.classList.toggle('d-none', !hasNumero);
+                commissionRow.classList.toggle('d-none', !data.is_externe);
+                fraisRetraitRow.classList.toggle('d-none', !data.frais_retrait);
+                retraitOption.classList.toggle('d-none', !data.is_meme_operateur);
+
+                if (!data.is_meme_operateur) {
+                    retraitCheckbox.checked = false;
+                }
+
+                if (hasNumero) {
+                    operatorInfo.className = 'alert border-0 py-2 px-3 small mb-3 ' + (data.is_meme_operateur ? 'alert-success' : 'alert-warning');
+                    operatorInfo.textContent = data.is_meme_operateur
+                        ? 'Même opérateur : vous pouvez inclure les frais de retrait.'
+                        : 'Autre opérateur : les frais de retrait ne sont pas inclus.';
                 }
             })
             .catch(error => console.error('Error fetching frais:', error));
         }, 500);
+    }
+
+    numeroInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+        calculateFrais();
     });
+
+    montantInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        calculateFrais();
+    });
+
+    retraitCheckbox.addEventListener('change', calculateFrais);
 });
 </script>
 <?= $this->endSection() ?>

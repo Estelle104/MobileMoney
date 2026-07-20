@@ -38,6 +38,9 @@
                             <a class="nav-link" href="<?= site_url('operateur/configuration/list') ?>"><i class="bi bi-gear me-1"></i> Préfixes</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="<?= site_url('operateur/prefixe-externe/list') ?>"><i class="bi bi-globe me-1"></i> Préfixes Externes</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="<?= site_url('operateur/operation/list') ?>"><i class="bi bi-arrow-left-right me-1"></i> Opérations</a>
                         </li>
                         <li class="nav-item">
@@ -45,6 +48,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= site_url('operateur/gains') ?>"><i class="bi bi-graph-up-arrow me-1"></i> Gains</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= site_url('operateur/reglements-externes') ?>"><i class="bi bi-cash-stack me-1"></i> Règlements</a>
                         </li>
                         <li class="nav-item ms-lg-3">
                             <a class="btn btn-outline-danger btn-sm mt-1" href="<?= site_url('operateur/logout') ?>"><i class="bi bi-box-arrow-right me-1"></i> Déconnexion</a>

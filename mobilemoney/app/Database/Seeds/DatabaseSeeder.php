@@ -300,5 +300,207 @@ class DatabaseSeeder extends Seeder
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
         ]);
+        /*
+|--------------------------------------------------------------------------
+| PREFIXES EXTERNES
+|--------------------------------------------------------------------------
+*/
+$this->db->table('prefixe_externe')->insertBatch([
+
+    // Orange -> Airtel
+    [
+        'code' => '037',
+        'nom_operateur_externe' => 'Airtel Money',
+        'pourcentage_commission' => 2.50,
+        'id_operateur' => 1,
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    // Orange -> MVola
+    [
+        'code' => '034',
+        'nom_operateur_externe' => 'MVola',
+        'pourcentage_commission' => 1.50,
+        'id_operateur' => 1,
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'code' => '038',
+        'nom_operateur_externe' => 'MVola',
+        'pourcentage_commission' => 1.50,
+        'id_operateur' => 1,
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    // MVola -> Orange
+    [
+        'code' => '032',
+        'nom_operateur_externe' => 'Orange Money',
+        'pourcentage_commission' => 2.00,
+        'id_operateur' => 2,
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'code' => '033',
+        'nom_operateur_externe' => 'Orange Money',
+        'pourcentage_commission' => 2.00,
+        'id_operateur' => 2,
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    // MVola -> Airtel
+    [
+        'code' => '037',
+        'nom_operateur_externe' => 'Airtel Money',
+        'pourcentage_commission' => 2.30,
+        'id_operateur' => 2,
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    // Airtel -> Orange
+    [
+        'code' => '032',
+        'nom_operateur_externe' => 'Orange Money',
+        'pourcentage_commission' => 2.10,
+        'id_operateur' => 3,
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'code' => '033',
+        'nom_operateur_externe' => 'Orange Money',
+        'pourcentage_commission' => 2.10,
+        'id_operateur' => 3,
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    // Airtel -> MVola
+    [
+        'code' => '034',
+        'nom_operateur_externe' => 'MVola',
+        'pourcentage_commission' => 1.80,
+        'id_operateur' => 3,
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'code' => '038',
+        'nom_operateur_externe' => 'MVola',
+        'pourcentage_commission' => 1.80,
+        'id_operateur' => 3,
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+]);
+/*
+|--------------------------------------------------------------------------
+| OPERATIONS VERS OPERATEURS EXTERNES
+|--------------------------------------------------------------------------
+*/
+$this->db->table('operation')->insertBatch([
+
+    [
+        'id_client_source' => 1,
+        'id_client_destinataire' => null,
+        'id_type_operation' => 3,
+        'montant' => 75000,
+        'frais' => 1875,
+        'numero_destinataire_externe' => '0376543210',
+        'id_prefixe_externe' => 1,
+        'date_transaction' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'id_client_source' => 3,
+        'id_client_destinataire' => null,
+        'id_type_operation' => 3,
+        'montant' => 120000,
+        'frais' => 1800,
+        'numero_destinataire_externe' => '0341239876',
+        'id_prefixe_externe' => 2,
+        'date_transaction' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'id_client_source' => 4,
+        'id_client_destinataire' => null,
+        'id_type_operation' => 3,
+        'montant' => 50000,
+        'frais' => 1000,
+        'numero_destinataire_externe' => '0339876543',
+        'id_prefixe_externe' => 5,
+        'date_transaction' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'id_client_source' => 8,
+        'id_client_destinataire' => null,
+        'id_type_operation' => 3,
+        'montant' => 250000,
+        'frais' => 4500,
+        'numero_destinataire_externe' => '0348887777',
+        'id_prefixe_externe' => 9,
+        'date_transaction' => date('Y-m-d H:i:s'),
+    ],
+
+]);
+/*
+|--------------------------------------------------------------------------
+| REGLEMENTS EXTERNES
+|--------------------------------------------------------------------------
+*/
+$this->db->table('reglement_externe')->insertBatch([
+
+    [
+        'id_operateur' => 1,
+        'nom_operateur_externe' => 'MVola',
+        'montant' => 150000,
+        'date_reglement' => '2026-07-01',
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'id_operateur' => 1,
+        'nom_operateur_externe' => 'Airtel Money',
+        'montant' => 275000,
+        'date_reglement' => '2026-07-05',
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'id_operateur' => 2,
+        'nom_operateur_externe' => 'Orange Money',
+        'montant' => 95000,
+        'date_reglement' => '2026-07-08',
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'id_operateur' => 2,
+        'nom_operateur_externe' => 'Airtel Money',
+        'montant' => 80000,
+        'date_reglement' => '2026-07-10',
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'id_operateur' => 3,
+        'nom_operateur_externe' => 'Orange Money',
+        'montant' => 210000,
+        'date_reglement' => '2026-07-12',
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+    [
+        'id_operateur' => 3,
+        'nom_operateur_externe' => 'MVola',
+        'montant' => 175000,
+        'date_reglement' => '2026-07-15',
+        'created_at' => date('Y-m-d H:i:s'),
+    ],
+
+]);
     }
 }
