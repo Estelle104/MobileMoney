@@ -192,8 +192,8 @@
   - () Vue : formulaire (numero destinataire + montant), affichage du frais avant validation
 
 - Voir les historiques
-  - () Route GET '/client/historique'
-  - () Model : 'OperationModel::getHistoriqueByClient(id_client)' (depots, retraits, transferts envoyes/reçus)
-  - () Controller : recupere et trie par date decroissante
-  - () Vue : tableau (date, type, montant, frais, sens pour les transferts : envoye/reçu)
+  - (ok) Route GET '/client/historique'
+  - (ok) Model : 'OperationModel::getHistoriqueByClient(id_client)' (depots, retraits, transferts envoyes/reçus)
+  - (ok) Controller : recupere et trie par date decroissante
+  - (ok) Vue : tableau (date, type, montant, frais, sens pour les transferts : envoye/reçu)
 

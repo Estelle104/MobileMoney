@@ -451,4 +451,26 @@ class OperationController extends BaseController
                 'Transfert effectué'
             );
     }
+
+    public function historique()
+    {
+
+        $idClient = session()->get('client_id');
+
+
+        $operationModel = new Operation();
+
+
+        $historique = $operationModel
+            ->getHistoriqueByClient($idClient);
+
+
+
+        return view(
+            'client/historique',
+            [
+                'historique' => $historique
+            ]
+        );
+    }
 }

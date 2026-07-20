@@ -32,13 +32,63 @@ class Operation extends Model
     /**
      * Historique complet d'un client (opérations émises + reçues).
      */
+    // public function getHistoriqueByClient(int $idClient): array
+    // {
+    //     return $this->groupStart()
+    //             ->where('id_client_source', $idClient)
+    //             ->orWhere('id_client_destinataire', $idClient)
+    //         ->groupEnd()
+    //         ->orderBy('date_transaction', 'DESC')
+    //         ->findAll();
+    // }
+
     public function getHistoriqueByClient(int $idClient): array
     {
-        return $this->groupStart()
-                ->where('id_client_source', $idClient)
-                ->orWhere('id_client_destinataire', $idClient)
+
+        return $this
+            ->select(
+                'operation.*,
+             type_operation.libelle as type_operation,
+             c1.numero as numero_source,
+             c2.numero as numero_destinataire'
+            )
+
+            ->join(
+                'type_operation',
+                'type_operation.id = operation.id_type_operation'
+            )
+
+            ->join(
+                'client c1',
+                'c1.id = operation.id_client_source',
+                'left'
+            )
+
+            ->join(
+                'client c2',
+                'c2.id = operation.id_client_destinataire',
+                'left'
+            )
+
+            ->groupStart()
+
+            ->where(
+                'operation.id_client_source',
+                $idClient
+            )
+
+            ->orWhere(
+                'operation.id_client_destinataire',
+                $idClient
+            )
+
             ->groupEnd()
-            ->orderBy('date_transaction', 'DESC')
+
+            ->orderBy(
+                'operation.date_transaction',
+                'DESC'
+            )
+
             ->findAll();
     }
 
