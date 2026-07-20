@@ -68,4 +68,9 @@ class Prefixe extends Model
         $clientModel = new Client();
         return $clientModel->where('id_prefixe', $idPrefixe)->countAllResults() === 0;
     }
+
+    public function trouverParCode(string $code)
+    {
+        return $this->where('code', $code)->first();
+    }
 }

@@ -34,7 +34,7 @@ class Client extends Model
         }
 
         $codePrefixe = substr($numero, 0, 3);
-        $prefixeModel = new PrefixeModel();
+        $prefixeModel = new Prefixe();
         $prefixe = $prefixeModel->where('code', $codePrefixe)->first();
 
         if (! $prefixe) {

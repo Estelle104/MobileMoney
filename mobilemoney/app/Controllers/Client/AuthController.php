@@ -3,14 +3,14 @@
 namespace App\Controllers\Client;
 
 use App\Controllers\BaseController;
-use App\Models\ClientModel;
+use App\Models\Client;
 
 class AuthController extends BaseController
 {
 
     public function login()
     {
-        return view('client/login');
+        return view('Client/login');
     }
 
     //----------------------------------------------------
@@ -21,7 +21,7 @@ class AuthController extends BaseController
 
         try
         {
-            $clientModel = new ClientModel();
+            $clientModel = new Client();
 
             $client = $clientModel
                 ->trouverOuCreerParNumero($numero);
@@ -34,7 +34,7 @@ class AuthController extends BaseController
 
             ]);
 
-            return redirect()->to('/client/dashboard');
+            return redirect()->to('/Client/dashboard');
         }
         catch(\Exception $e)
         {
@@ -55,7 +55,7 @@ class AuthController extends BaseController
             'numero'
         ]);
 
-        return redirect()->to('/client/login');
+        return redirect()->to('/Client/login');
     }
 
 }
