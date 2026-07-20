@@ -58,15 +58,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const fraisSpan = document.getElementById('frais');
     let timeout = null;
 
-    numeroInput.addEventListener('input', function() {
-        this.value = this.value.replace(/\D/g, '');
-    });
-
-    montantInput.addEventListener('input', function(e) {
-        this.value = this.value.replace(/[^0-9]/g, '');
+    function calculateFrais() {
+        const montant = montantInput.value;
+        const numero = numeroInput.value;
         
         clearTimeout(timeout);
-        const montant = this.value;
         
         if (montant === '' || montant == 0) {
             fraisSpan.textContent = '0';
@@ -83,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: new URLSearchParams({
                     '<?= csrf_token() ?>': '<?= csrf_hash() ?>',
                     'montant': montant,
+                    'numero_destinataire': numero,
                     'type_operation': 'transfert'
                 })
             })
@@ -94,6 +91,16 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => console.error('Error fetching frais:', error));
         }, 500);
+    }
+
+    numeroInput.addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '');
+        if (this.value.length === 10) calculateFrais();
+    });
+
+    montantInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        calculateFrais();
     });
 });
 </script>

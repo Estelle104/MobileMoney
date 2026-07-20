@@ -48,6 +48,30 @@ CREATE TABLE operation(
     FOREIGN KEY (id_type_operation) REFERENCES type_operation(id)
 );
 
+CREATE TABLE prefixe_externe(
+    id INT PRIMARY KEY,
+    code VARCHAR(3) NOT NULL UNIQUE,
+    nom_operateur_externe VARCHAR(50) NOT NULL,
+    pourcentage_commission DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+    id_operateur INT NOT NULL,
+    FOREIGN KEY (id_operateur) REFERENCES operateur(id)
+);
+
+CREATE TABLE reglement_externe(
+    id INT PRIMARY KEY,
+    id_operateur INT NOT NULL,
+    nom_operateur_externe VARCHAR(50) NOT NULL,
+    montant DECIMAL(10,2) NOT NULL,
+    date_reglement TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_operateur) REFERENCES operateur(id)
+);
+
+ALTER TABLE operation ADD COLUMN numero_destinataire_externe VARCHAR(20) NULL;
+ALTER TABLE operation ADD COLUMN id_prefixe_externe INT NULL,
+  ADD FOREIGN KEY (id_prefixe_externe) REFERENCES prefixe_externe(id);
+
+
+
 -- INSERT SEED DATA
 INSERT INTO type_operation (id, libelle) VALUES
 (1, 'depot'),
@@ -89,3 +113,5 @@ INSERT INTO operation (id, id_client_source, id_client_destinataire, id_type_ope
 (2, 5, NULL, 2, 20000, 500, CURRENT_TIMESTAMP),
 (3, 3, 1, 3, 100000, 700, CURRENT_TIMESTAMP),
 (4, 4, 3, 3, 50000, 300, CURRENT_TIMESTAMP);
+
+

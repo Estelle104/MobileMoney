@@ -32,6 +32,14 @@ $routes->group('operateur', ['filter' => 'authOperateur'], function ($routes) {
     $routes->post('configuration/mettreajour/(:num)', 'Operateur\PrefixeController::mettreajour/$1');
     $routes->post('configuration/supprimer/(:num)', 'Operateur\PrefixeController::supprimer/$1');
 
+    // Configuration des préfixes externes
+    $routes->get('prefixe-externe/list', 'Operateur\PrefixeExterneController::list');
+    $routes->get('prefixe-externe/creer', 'Operateur\PrefixeExterneController::creer');
+    $routes->post('prefixe-externe/enregistrer', 'Operateur\PrefixeExterneController::enregistrer');
+    $routes->get('prefixe-externe/modifier/(:num)', 'Operateur\PrefixeExterneController::modifier/$1');
+    $routes->post('prefixe-externe/mettreajour/(:num)', 'Operateur\PrefixeExterneController::mettreajour/$1');
+    $routes->post('prefixe-externe/supprimer/(:num)', 'Operateur\PrefixeExterneController::supprimer/$1');
+
     // Types d'opérations / barème de frais
     $routes->get('operation/list', 'Operateur\OperationController::list');
     $routes->get('operation/list/(:num)', 'Operateur\OperationController::list/$1');
@@ -44,6 +52,12 @@ $routes->group('operateur', ['filter' => 'authOperateur'], function ($routes) {
     // Gains
     $routes->get('gains', 'Operateur\GainController::index');
     $routes->get('gains/filtrer', 'Operateur\GainController::filtrer');
+
+    // Règlements externes
+    $routes->get('reglements-externes', 'Operateur\ReglementExterneController::index');
+    $routes->get('reglements-externes/filtrer', 'Operateur\ReglementExterneController::filtrer');
+    $routes->get('reglements-externes/creer', 'Operateur\ReglementExterneController::creer');
+    $routes->post('reglements-externes/enregistrer', 'Operateur\ReglementExterneController::enregistrer');
 
     // Comptes clients
     $routes->get('clients/list', 'Operateur\ClientController::list');
