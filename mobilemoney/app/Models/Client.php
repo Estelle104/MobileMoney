@@ -99,4 +99,11 @@ class Client extends Model
     {
         return $this->where('numero', $numero)->first();
     }
+
+    public function getPrefixeClient(int $idClient): ?array
+    {
+        $client = $this->find($idClient);
+        if (!$client) return null;
+        return (new Prefixe())->find($client['id_prefixe']);
+    }
 }

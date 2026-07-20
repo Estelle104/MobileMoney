@@ -87,6 +87,8 @@ $routes->group('client', ['filter' => 'authClient'], function ($routes) {
 
     $routes->get('transfert', 'Client\OperationController::transfert');
     $routes->post('transfert/valider', 'Client\OperationController::validerTransfert');
+    $routes->get('transfert-multiple', 'Client\OperationController::transfertMultiple');
+    $routes->post('transfert-multiple/valider', 'Client\OperationController::validerTransfertMultiple');
 
     $routes->get('historique', 'Client\OperationController::historique');
     

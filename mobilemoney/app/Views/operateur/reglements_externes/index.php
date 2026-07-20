@@ -56,7 +56,7 @@
                             <td class="px-4 py-3 text-end text-secondary"><?= number_format($s['total_transfere'], 2, ',', ' ') ?> Ar</td>
                             <td class="px-4 py-3 text-end text-success"><?= number_format($s['total_regle'], 2, ',', ' ') ?> Ar</td>
                             <td class="px-4 py-3 text-end fw-bold <?= $s['solde'] > 0 ? 'text-danger' : 'text-success' ?>">
-                                <?= number_format($s['solde'], 2, ',', ' ') ?> Ar
+                                <?= number_format($s['solde'] < 0 ? 0 : $s['solde'], 2, ',', ' ') ?> Ar
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -305,8 +305,10 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
   - () Formulaire d'ajout d'un reglement (montant + operateur externe concerne)
 
 
-## Cote client (etu004219)
-## Faire un transfert (Même opérateur / Autre opérateur)
+
+
+## V2- Cote client (etu004219)
+# Faire un transfert (Même opérateur / Autre opérateur)
 
 * Route
 
@@ -315,13 +317,13 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
 
 * Model
 
-  * () `PrefixeModel::trouverParCode(code)`
-  * () `PrefixeModel::estMemeOperateur(idPrefixeSource, idPrefixeDestination)`
-  * () `ClientModel::getPrefixeClient(idClient)`
-  * () `OperateurModel::getCommissionAutreOperateur()`
-  * (ok) `BaremeFraisModel::getFraisParMontant(id_type_operation=transfert, montant)`
+  * () PrefixeModel::trouverParCode(code)
+  * () PrefixeModel::estMemeOperateur(idPrefixeSource, idPrefixeDestination)
+  * () ClientModel::getPrefixeClient(idClient)
+  * () OperateurModel::getCommissionAutreOperateur()
+  * (ok) BaremeFraisModel::getFraisParMontant(id_type_operation=transfert, montant)
 
-* Controller (`validerTransfert()`)
+* Controller (validerTransfert())
 
   * () Récupère le numéro destinataire
   * () Extrait les 3 premiers chiffres
@@ -334,7 +336,7 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
 * () Calcule les frais de transfert
 * () Vérifie si "Inclure les frais de retrait" est coché
 * () Calcule les frais de retrait si nécessaire
-* () Vérifie que `solde >= montant + frais_transfert + frais_retrait`
+* () Vérifie que solde >= montant + frais_transfert + frais_retrait
 * () Crée l'opération
 * () Débite le client
 * () Créditer le destinataire
@@ -345,7 +347,7 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
 
 * () Calcule la commission supplémentaire (%)
 
-* () Vérifie que `solde >= montant + frais_transfert + commission`
+* () Vérifie que solde >= montant + frais_transfert + commission
 
 * () Crée l'opération
 
@@ -358,7 +360,7 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
 * Vue
 
   * () Afficher automatiquement si le numéro appartient au même opérateur
-  * () Afficher/Masquer la case **"Inclure les frais de retrait"**
+  * () Afficher/Masquer la case *"Inclure les frais de retrait"*
   * () Afficher les frais de transfert
   * () Afficher la commission (si autre opérateur)
   * () Afficher le total débité avant validation
@@ -369,19 +371,19 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
 
 * Base de données
 
-  * () Ajouter le champ `frais_retrait_inclus` dans la table `operation`
+  * () Ajouter le champ frais_retrait_inclus dans la table operation
 
-* Controller (`validerTransfert()`)
+* Controller (validerTransfert())
 
   * () Lire la valeur de la case à cocher
-  * () Enregistrer `frais_retrait_inclus = 1` si cochée
+  * () Enregistrer frais_retrait_inclus = 1 si cochée
   * () Ajouter les frais de retrait au montant débité
 
-* Controller (`validerRetrait()`)
+* Controller (validerRetrait())
 
-  * () Vérifier si un transfert reçu possède `frais_retrait_inclus = 1`
+  * () Vérifier si un transfert reçu possède frais_retrait_inclus = 1
   * () Si oui, supprimer les frais de retrait
-  * () Remettre `frais_retrait_inclus = 0` après utilisation
+  * () Remettre frais_retrait_inclus = 0 après utilisation
 
 ---
 
@@ -394,15 +396,15 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
 
 * Model
 
-  * (ok) `ClientModel::findByNumero(numero)`
-  * () `ClientModel::getPrefixeClient(idClient)`
-  * () `PrefixeModel::estMemeOperateur(idPrefixeSource,idPrefixeDestination)`
-  * (ok) `BaremeFraisModel::getFraisParMontant(id_type_operation=transfert,montant)`
+  * (ok) ClientModel::findByNumero(numero)
+  * () ClientModel::getPrefixeClient(idClient)
+  * () PrefixeModel::estMemeOperateur(idPrefixeSource,idPrefixeDestination)
+  * (ok) BaremeFraisModel::getFraisParMontant(id_type_operation=transfert,montant)
 
 * Controller
 
-  * () `transfertMultiple()` : affiche le formulaire
-  * () `validerTransfertMultiple()` :
+  * () transfertMultiple() : affiche le formulaire
+  * () validerTransfertMultiple() :
 
     * () Récupère la liste des numéros
     * () Récupère le montant total
@@ -412,15 +414,15 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
     * () Vérifie que tous les numéros existent
     * () Vérifie qu'aucun numéro n'est celui du client connecté
     * () Vérifie que tous appartiennent au même opérateur
-    * () Calcule le montant individuel (`montant_total / nombre_destinataires`)
+    * () Calcule le montant individuel (montant_total / nombre_destinataires)
     * () Calcule les frais de chaque transfert
     * () Calcule le montant total à débiter
     * () Vérifie que le solde est suffisant
-    * () Lance une transaction SQLite (`transStart()`)
+    * () Lance une transaction SQLite (transStart())
     * () Crée une opération pour chaque destinataire
     * () Créditer chaque destinataire
     * () Débiter le client une seule fois
-    * () Valide la transaction (`transComplete()`)
+    * () Valide la transaction (transComplete())
 
 * Vue
 
@@ -436,12 +438,12 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
 
 * Base de données
 
-  * () Ajouter le champ `id_groupe_transfert` dans la table `operation`
+  * () Ajouter le champ id_groupe_transfert dans la table operation
 
-* Model (`OperationModel`)
+* Model (OperationModel)
 
-  * () Adapter `getHistoriqueByClient()`
-  * () Regrouper les opérations ayant le même `id_groupe_transfert`
+  * () Adapter getHistoriqueByClient()
+  * () Regrouper les opérations ayant le même id_groupe_transfert
 
 * Controller
 
@@ -450,7 +452,7 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
 
 * Vue
 
-  * () Afficher **"Transfert multiple vers X destinataires"**
+  * () Afficher *"Transfert multiple vers X destinataires"*
   * () Afficher le détail si nécessaire
 
 ---
@@ -459,20 +461,18 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
 
 ### PrefixeModel
 
-* () `trouverParCode(code)`
-* () `estMemeOperateur(idPrefixeSource, idPrefixeDestination)`
+* () trouverParCode(code)
+* () estMemeOperateur(idPrefixeSource, idPrefixeDestination)
 
 ### ClientModel
 
-* (ok) `findByNumero(numero)`
-* () `getPrefixeClient(idClient)`
+* (ok) findByNumero(numero)
+* () getPrefixeClient(idClient)
 
 ### BaremeFraisModel
 
-* (ok) `getFraisParMontant(idTypeOperation, montant)`
+* (ok) getFraisParMontant(idTypeOperation, montant)
 
 ### OperateurModel
 
-* () `getCommissionAutreOperateur()`
-
-
+* () getCommissionAutreOperateur()

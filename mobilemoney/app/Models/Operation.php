@@ -17,7 +17,9 @@ class Operation extends Model
         'montant',
         'frais',
         'numero_destinataire_externe',
-        'id_prefixe_externe'
+        'id_prefixe_externe',
+        'frais_retrait_inclus',
+        'id_groupe_transfert',
     ];
 
     protected $useTimestamps = true;
