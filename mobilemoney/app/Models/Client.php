@@ -22,10 +22,7 @@ class Client extends Model
         'solde'      => 'permit_empty|decimal',
     ];
 
-    /**
-     * Recherche un client par numéro, ou le crée automatiquement
-     * si le préfixe correspond à un opérateur existant (login auto).
-     */
+
     public function trouverOuCreerParNumero(string $numero): ?array
     {
         $existant = $this->where('numero', $numero)->first();
@@ -59,6 +56,15 @@ class Client extends Model
             ->join('prefixe', 'prefixe.id = client.id_prefixe')
             ->where('prefixe.id_operateur', $idOperateur)
             ->findAll();
+    }
+
+    public function appartientAOperateur(int $idClient, int $idOperateur): bool
+    {
+        return $this->select('client.id')
+            ->join('prefixe', 'prefixe.id = client.id_prefixe')
+            ->where('client.id', $idClient)
+            ->where('prefixe.id_operateur', $idOperateur)
+            ->first() !== null;
     }
 
     public function getSoldeById(int $idClient): ?float

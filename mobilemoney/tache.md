@@ -69,7 +69,7 @@
   - (ok) Formulaire de creation/modification 
 
 
-### Types d'operations et bareme de frais
+### (ok) Types d'operations et bareme de frais
 
 - Route
   - (ok) GET '/operateur/operation/list'
@@ -97,36 +97,43 @@
   - (ok) Tableau des tranches par type d'operation (montant_min – montant_max – frais)
   - (ok) Formulaire d'ajout/modification (avec dropdown de type d'operation)
 
-### Situation des gains via les frais (retrait et transfert)
+### (ok) Situation des gains via les frais (retrait et transfert)
 
 - Route
-  - () GET '/operateur/gains'
-  - () GET '/operateur/gains/filtrer'
-- Model
-  - () Methode dans 'OperationModel' : 'getTotalFraisParType(date_debut, date_fin)'
-  - () Requete agregee 'SUM(frais)' groupee par 'id_type_operation', restreinte aux clients dont le prefixe appartient a l'operateur connecte (jointure 'client' -> 'prefixe' -> 'operateur')
-- Controller
-  - () 'index()' : affiche le total des gains (retrait + transfert), depot exclu si sans frais
-  - () 'filtrer()' : applique un filtre par plage de dates (formulaire GET)
-- Vue
-  - () Dashboard avec total gains retrait / total gains transfert / total general
-  - () Formulaire de filtre par date
+  - (ok) GET '/operateur/gains'
+  - (ok) GET '/operateur/gains/filtrer'
 
-### Situation des comptes clients
+- Model
+  - (ok) Methode dans 'OperationModel' : 'getTotalFraisParType(date_debut, date_fin)'
+  - (ok) Requete agregee 'SUM(frais)' groupee par 'id_type_operation', restreinte aux clients dont le prefixe appartient a l'operateur connecte (jointure 'client' -> 'prefixe' -> 'operateur')
+
+- Controller
+  - (ok) 'index()' : affiche le total des gains (retrait + transfert), depot exclu si sans frais
+  - (ok) 'filtrer()' : applique un filtre par plage de dates (formulaire GET)
+  
+- Vue
+  - (ok) Dashboard avec total gains retrait / total gains transfert / total general
+  - (ok) Formulaire de filtre par date
+
+
+### (ok) Situation des comptes clients
 
 - Route
-  - () GET '/operateur/clients/list'
-  - () GET '/operateur/clients/detail/(:num)'
+  - (ok) GET '/operateur/clients/list'
+  - (ok) GET '/operateur/clients/detail/(:num)'
+  
 - Model
-  - () 'ClientModel::getAllByOperateur(id_operateur)' (jointure via 'prefixe')
-  - () 'ClientModel::getSoldeById(id_client)'
-  - () 'OperationModel::getHistoriqueByClient(id_client)'
+  - (ok) 'ClientModel::getAllByOperateur(id_operateur)' (jointure via 'prefixe')
+  - (ok) 'ClientModel::getSoldeById(id_client)'
+  - (ok) 'OperationModel::getHistoriqueByClient(id_client)'
+
 - Controller
-  - () 'list()' : liste des clients de l'operateur avec leur solde
-  - () 'detail($id)' : detail d'un client + historique de ses operations (verifier qu'il appartient bien a l'operateur connecte)
+  - (ok) 'list()' : liste des clients de l'operateur avec leur solde
+  - (ok) 'detail($id)' : detail d'un client + historique de ses operations (verifier qu'il appartient bien a l'operateur connecte)
+
 - Vue
-  - () Tableau des clients (numero, solde)
-  - () Page detail avec historique des operations (type, montant, frais, date)
+  - (ok) Tableau des clients (numero, solde)
+  - (ok) Page detail avec historique des operations (type, montant, frais, date)
 
 
 
