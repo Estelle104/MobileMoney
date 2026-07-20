@@ -164,31 +164,31 @@
 
 - Faire un depot
   - (ok) Route GET '/client/depot' (formulaire) + POST '/client/depot/valider'
-  - () Model : 'BaremeFraisModel::getFraisParMontant(id_type_operation=depot, montant)'
-  - () Controller :
-    - () Calcule le frais (peut etre 0 selon le bareme  pour "depot")
-    - () Cree l'enregistrement dans 'operation' ('id_client_source' = client, 'id_client_destinataire' = NULL)
-    - () Met a jour 'client.solde += montant'
-  - () Vue : formulaire montant + confirmation
+  - (ok) Model : 'BaremeFraisModel::getFraisParMontant(id_type_operation=depot, montant)'
+  - (ok) Controller :
+    - (ok) Calcule le frais (peut etre 0 selon le bareme  pour "depot")
+    - (ok) Cree l'enregistrement dans 'operation' ('id_client_source' = client, 'id_client_destinataire' = NULL)
+    - (ok) Met a jour 'client.solde += montant'
+  - (en cours) Vue : formulaire montant + confirmation
 
 - Faire un retrait 
-  - () Route GET '/client/retrait' + POST '/client/retrait/valider'
-  - () Model : 'getFraisParMontant(id_type_operation=retrait, montant)'
-  - () Controller :
-    - () Verifie que 'solde >= montant + frais' (sinon erreur "solde insuffisant")
-    - () Cree l'enregistrement 'operation'
-    - () Met a jour 'client.solde -= (montant + frais)'
+  - (ok) Route GET '/client/retrait' + POST '/client/retrait/valider'
+  - (ok) Model : 'getFraisParMontant(id_type_operation=retrait, montant)'
+  - (ok) Controller :
+    - (ok) Verifie que 'solde >= montant + frais' (sinon erreur "solde insuffisant")
+    - (ok) Cree l'enregistrement 'operation'
+    - (ok) Met a jour 'client.solde -= (montant + frais)'
   - () Vue : formulaire montant + confirmation + affichage du frais avant validation
 
 - Faire un transfert
-  - () Route GET '/client/transfert' (formulaire) + POST '/client/transfert/valider'
-  - () Model : 'getFraisParMontant(id_type_operation=transfert, montant)' + 'ClientModel::findByNumero(numero_destinataire)'
-  - () Controller :
-    - () Verifie que le numero destinataire existe (sinon erreur)
-    - () Verifie que 'solde_source >= montant + frais'
-    - () Cree l'enregistrement 'operation' ('id_client_source', 'id_client_destinataire' renseignes)
-    - () Met a jour les deux soldes : 'source -= (montant + frais)', 'destinataire += montant'
-    - () Idealement dans une transaction SQLite ('$db->transStart() / transComplete()') pour garantir la coherence
+  - (ok) Route GET '/client/transfert' (formulaire) + POST '/client/transfert/valider'
+  - (ok) Model : 'getFraisParMontant(id_type_operation=transfert, montant)' + 'ClientModel::findByNumero(numero_destinataire)'
+  - (ok) Controller :
+    - (ok) Verifie que le numero destinataire existe (sinon erreur)
+    - (ok) Verifie que 'solde_source >= montant + frais'
+    - (ok) Cree l'enregistrement 'operation' ('id_client_source', 'id_client_destinataire' renseignes)
+    - (ok) Met a jour les deux soldes : 'source -= (montant + frais)', 'destinataire += montant'
+    - (ok) Idealement dans une transaction SQLite ('$db->transStart() / transComplete()') pour garantir la coherence
   - () Vue : formulaire (numero destinataire + montant), affichage du frais avant validation
 
 - Voir les historiques
