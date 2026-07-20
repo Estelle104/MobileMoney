@@ -6,8 +6,8 @@
 - (ok) (etu004185) Ecriture du todo
 - (ok) (etu004219) Mise en place du template CodeIgniter 
 - (ok) (etu004185, etu004219) Conception de la base de donnees 
-  - () (etu004219) ecriture des migrations CI4 
-  - () (etu004219) Seeder 
+  - (ok) (etu004219) ecriture des migrations CI4 
+  - (ok) (etu004219) Seeder 
 
 ---
 
@@ -126,7 +126,7 @@
   - () Tableau des clients (numero, solde)
   - () Page detail avec historique des operations (type, montant, frais, date)
 
----
+
 
 ## Client (etu004219)
 
@@ -195,4 +195,3 @@
   - () Controller : recupere et trie par date decroissante
   - () Vue : tableau (date, type, montant, frais, sens pour les transferts : envoye/reçu)
 
----
