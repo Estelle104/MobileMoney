@@ -20,7 +20,8 @@ $routes->get('operateur/logout', 'Operateur\AuthController::logout');
 // -------------------------------------------------
 $routes->group('operateur', ['filter' => 'authOperateur'], function ($routes) {
 
-    $routes->get('dashboard', 'Operateur\OperateurController::index');
+    $routes->get('dashboard', 'Operateur\DashboardController::index');
+
 
     // Configuration des préfixes
     $routes->get('configuration', 'Operateur\PrefixeController::index');
@@ -38,7 +39,7 @@ $routes->group('operateur', ['filter' => 'authOperateur'], function ($routes) {
     $routes->get('operation/modifier/(:num)', 'Operateur\OperationController::modifier/$1');
     $routes->post('operation/update/(:num)', 'Operateur\OperationController::update/$1');
     $routes->post('operation/supprimer/(:num)', 'Operateur\OperationController::supprimer/$1');
-    
+
     // Gains
     $routes->get('gains', 'Operateur\GainController::index');
     $routes->get('gains/filtrer', 'Operateur\GainController::filtrer');
