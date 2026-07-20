@@ -106,10 +106,10 @@ class Operation extends Model
             ->groupBy('type_operation.libelle');
 
         if ($dateDebut) {
-            $builder->where('operation.date_transaction >=', $dateDebut);
+            $builder->where('operation.date_transaction >=', $dateDebut . ' 00:00:00');
         }
         if ($dateFin) {
-            $builder->where('operation.date_transaction <=', $dateFin);
+            $builder->where('operation.date_transaction <=', $dateFin . ' 23:59:59');
         }
 
         return $builder->findAll();

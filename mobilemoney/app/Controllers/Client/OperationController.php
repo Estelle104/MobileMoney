@@ -27,12 +27,18 @@ class OperationController extends BaseController
     {
 
         $montant = (float)$this->request->getPost('montant');
-
+        $numero = $this->request->getPost('numero');
 
         if ($montant <= 0) {
             return redirect()
                 ->back()
                 ->with('error', 'Montant invalide');
+        }
+
+        if (!preg_match('/^[0-9]{10}$/', $numero)) {
+            return redirect()
+                ->back()
+                ->with('error', 'Le numéro doit contenir exactement 10 chiffres.');
         }
 
 
@@ -78,38 +84,31 @@ class OperationController extends BaseController
 
 
 
+        // récupérer destinataire
+        $destinataire = $clientModel->findByNumero($numero);
+
+        if (!$destinataire) {
+            return redirect()
+                ->back()
+                ->with('error', 'Le compte correspondant à ce numéro est introuvable.');
+        }
+
+        $idDestinataire = $destinataire['id'];
+
         // insertion opération
-
         $operationModel->insert([
-
             'id_client_source' => $idClient,
-
-            'id_client_destinataire' => null,
-
+            'id_client_destinataire' => $idDestinataire,
             'id_type_operation' => $idDepot,
-
             'montant' => $montant,
-
             'frais' => $frais
-
         ]);
 
-
-
-        // mise à jour solde
-
-        $client = $clientModel->find($idClient);
-
-
+        // mise à jour solde du destinataire
         $clientModel->update(
-            $idClient,
+            $idDestinataire,
             [
-                'solde' =>
-                $client['solde']
-                    +
-                    $montant
-                    -
-                    $frais
+                'solde' => $destinataire['solde'] + $montant - $frais
             ]
         );
 
@@ -118,7 +117,7 @@ class OperationController extends BaseController
             ->to('/client/solde')
             ->with(
                 'success',
-                'Dépôt effectué'
+                'Dépôt de ' . $montant . ' Ar effectué sur le numéro ' . esc($numero)
             );
     }
 
