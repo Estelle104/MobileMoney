@@ -311,22 +311,27 @@ class OperationController extends BaseController
         $destinataire =
             $clientModel
             ->findByNumero($numeroDest);
-
-
+            
+        $isExterne = false;
+        $prefixeExterne = null;
 
         if (!$destinataire) {
-
-            return redirect()
-                ->back()
-                ->with(
-                    'error',
-                    'Destinataire introuvable'
-                );
+            $prefixeCode = substr($numeroDest, 0, 3);
+            $extModel = new \App\Models\PrefixeExterneModel();
+            $prefixeExterne = $extModel->estPrefixeExterne($prefixeCode);
+            
+            if (!$prefixeExterne) {
+                return redirect()
+                    ->back()
+                    ->with(
+                        'error',
+                        'Opérateur destinataire inconnu ou destinataire introuvable'
+                    );
+            }
+            $isExterne = true;
         }
 
-
-
-        if ($destinataire['id'] == $idSource) {
+        if (!$isExterne && $destinataire['id'] == $idSource) {
 
             return redirect()
                 ->back()
@@ -336,15 +341,11 @@ class OperationController extends BaseController
                 );
         }
 
-
-
         // type transfert
 
         $idTransfert =
             $typeModel
             ->getIdParLibelle('transfert');
-
-
 
         // frais
 
@@ -355,12 +356,13 @@ class OperationController extends BaseController
                 $montant
             );
 
-
         if ($frais === null) {
             $frais = 0;
         }
-
-
+        
+        if ($isExterne) {
+            $frais += $montant * ($prefixeExterne['pourcentage_commission'] / 100);
+        }
 
         // solde suffisant
 
@@ -374,63 +376,43 @@ class OperationController extends BaseController
                 );
         }
 
-
-
         // insertion opération
 
         $operationModel->insert([
-
             'id_client_source' => $idSource,
-
-            'id_client_destinataire' => $destinataire['id'],
-
+            'id_client_destinataire' => $isExterne ? null : $destinataire['id'],
+            'numero_destinataire_externe' => $isExterne ? $numeroDest : null,
+            'id_prefixe_externe' => $isExterne ? $prefixeExterne['id'] : null,
             'id_type_operation' => $idTransfert,
-
             'montant' => $montant,
-
             'frais' => $frais
-
         ]);
-
-
 
         // retirer source
 
         $clientModel->update(
-
             $idSource,
-
             [
-
                 'solde' =>
                 $source['solde']
                     -
                     ($montant + $frais)
-
             ]
-
         );
-
-
 
         // créditer destinataire
 
-        $clientModel->update(
-
-            $destinataire['id'],
-
-            [
-
-                'solde' =>
-                $destinataire['solde']
-                    +
-                    $montant
-
-            ]
-
-        );
-
-
+        if (!$isExterne) {
+            $clientModel->update(
+                $destinataire['id'],
+                [
+                    'solde' =>
+                    $destinataire['solde']
+                        +
+                        $montant
+                ]
+            );
+        }
 
         $db->transComplete();
 
@@ -481,6 +463,7 @@ class OperationController extends BaseController
     {
         $montant = (float)$this->request->getPost('montant');
         $type = $this->request->getPost('type_operation');
+        $numero = $this->request->getPost('numero_destinataire');
 
         if ($montant <= 0 || !$type) {
             return $this->response->setJSON(['frais' => 0]);
@@ -495,7 +478,20 @@ class OperationController extends BaseController
         }
 
         $frais = $baremeModel->getFraisParMontant($idType, $montant);
+        $frais = $frais === null ? 0 : $frais;
+
+        if ($type === 'transfert' && $numero && strlen($numero) >= 3) {
+            $prefixeCode = substr($numero, 0, 3);
+            $clientModel = new Client();
+            if (!$clientModel->findByNumero($numero)) {
+                $extModel = new \App\Models\PrefixeExterneModel();
+                $ext = $extModel->estPrefixeExterne($prefixeCode);
+                if ($ext) {
+                    $frais += $montant * ($ext['pourcentage_commission'] / 100);
+                }
+            }
+        }
         
-        return $this->response->setJSON(['frais' => $frais === null ? 0 : $frais]);
+        return $this->response->setJSON(['frais' => $frais]);
     }
 }
