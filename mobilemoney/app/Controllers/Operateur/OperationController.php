@@ -8,7 +8,7 @@ use App\Models\BaremeFrais;
 
 class OperationController extends BaseController
 {
-    public function list($idTypeOperation)
+    public function list($idTypeOperation = 1)
     {
         $typeModel   = new TypeOperation();
         $baremeModel = new BaremeFrais();
@@ -21,10 +21,12 @@ class OperationController extends BaseController
         }
 
         $tranches = $baremeModel->findAllByType($idTypeOperation);
+        $typesOperations = $typeModel->findAll();
 
         return view('operateur/operation/list', [
-            'typeOperation' => $typeOperation,
-            'tranches'      => $tranches,
+            'typeOperation'   => $typeOperation,
+            'typesOperations' => $typesOperations,
+            'tranches'        => $tranches,
         ]);
     }
 

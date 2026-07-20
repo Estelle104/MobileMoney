@@ -33,6 +33,7 @@ $routes->group('operateur', ['filter' => 'authOperateur'], function ($routes) {
     $routes->post('configuration/supprimer/(:num)', 'Operateur\PrefixeController::supprimer/$1');
 
     // Types d'opérations / barème de frais
+    $routes->get('operation/list', 'Operateur\OperationController::list');
     $routes->get('operation/list/(:num)', 'Operateur\OperationController::list/$1');
     $routes->get('operation/ajouter', 'Operateur\OperationController::ajouter');
     $routes->post('operation/enregistrer', 'Operateur\OperationController::enregistrer');

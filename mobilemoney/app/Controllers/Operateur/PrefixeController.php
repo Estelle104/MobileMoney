@@ -61,7 +61,6 @@ class PrefixeController extends BaseController
     {
         $prefixeModel = new Prefixe();
 
-        // Sécurité : le préfixe doit appartenir à l'opérateur connecté
         if (! $prefixeModel->appartientAOperateur($id, session()->get('operateur_id'))) {
             return redirect()->to('/operateur/configuration/list')
                 ->with('error', 'Accès refusé à ce préfixe.');
@@ -86,7 +85,7 @@ class PrefixeController extends BaseController
 
         $nouveauCode = $this->request->getPost('code');
 
-        // Utilise la méthode métier qui répercute le changement sur les clients
+        // cahngement cote client
         if (! $prefixeModel->modifierCode($id, $nouveauCode)) {
             return redirect()->back()
                 ->withInput()
@@ -98,7 +97,7 @@ class PrefixeController extends BaseController
     }
 
     /**
-     * Supprime un préfixe (si aucun client n'y est rattaché).
+     * Supprime un préfixe
      */
     public function supprimer($id)
     {

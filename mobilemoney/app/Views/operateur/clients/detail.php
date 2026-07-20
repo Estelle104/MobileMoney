@@ -2,48 +2,70 @@
 
 <?= $this->section('content') ?>
 
-<h1>Détail du client — <?= esc($client['numero']) ?></h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1 fw-bold">Détail du client</h1>
+        <p class="text-secondary mb-0"><span class="badge bg-primary-subtle text-primary px-2 fs-6 me-1"><?= esc($client['numero']) ?></span> Client depuis le <?= esc(date('d/m/Y', strtotime($client['created_at']))) ?></p>
+    </div>
+    <a href="<?= site_url('operateur/clients/list') ?>" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Retour à la liste
+    </a>
+</div>
 
-<p><strong>Solde actuel :</strong> <?= number_format($client['solde'], 2) ?> Ar</p>
-<p><strong>Client depuis :</strong> <?= esc($client['created_at']) ?></p>
+<div class="row mb-5">
+    <div class="col-md-4">
+        <div class="card p-4 border-0 shadow-sm bg-primary text-white h-100">
+            <span class="text-white-50 small fw-medium mb-1"> Solde actuel</span>
+            <h2 class="amount my-2 text-white"><?= number_format($client['solde'], 2, ',', ' ') ?> <span class="fs-5 fw-normal">Ar</span></h2>
+        </div>
+    </div>
+</div>
 
-<a href="<?= site_url('operateur/clients/list') ?>">&larr; Retour à la liste</a>
+<h4 class="mb-3 fw-bold h5">Historique des opérations</h4>
 
-<h2>Historique des opérations</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Sens</th>
-            <th>Montant</th>
-            <th>Frais</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if (empty($historique)): ?>
-            <tr>
-                <td colspan="5">Aucune opération enregistrée.</td>
-            </tr>
-        <?php else: ?>
-            <?php foreach ($historique as $operation): ?>
+<div class="card p-0 border-0 shadow-sm overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover table-borderless align-middle mb-0">
+            <thead class="bg-light text-secondary small fw-semibold">
                 <tr>
-                    <td><?= esc($operation['date_transaction']) ?></td>
-                    <td><?= esc($operation['id_type_operation']) ?></td>
-                    <td>
-                        <?php if ($operation['id_client_source'] == $client['id']): ?>
-                            Envoyé
-                        <?php else: ?>
-                            Reçu
-                        <?php endif; ?>
-                    </td>
-                    <td><?= number_format($operation['montant'], 2) ?> Ar</td>
-                    <td><?= number_format($operation['frais'], 2) ?> Ar</td>
+                    <th class="px-4 py-3">Date</th>
+                    <th class="px-4 py-3">Type</th>
+                    <th class="px-4 py-3">Sens</th>
+                    <th class="px-4 py-3 text-end">Montant</th>
+                    <th class="px-4 py-3 text-end">Frais appliqués</th>
                 </tr>
-            <?php endforeach; ?>
-        <?php endif; ?>
-    </tbody>
-</table>
+            </thead>
+            <tbody class="border-top">
+                <?php if (empty($historique)): ?>
+                    <tr>
+                        <td colspan="5" class="px-4 py-4 text-center text-secondary">Aucune opération enregistrée pour ce client.</td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($historique as $operation): ?>
+                        <tr>
+                            <td class="px-4 py-3"><?= esc(date('d/m/Y H:i', strtotime($operation['date_transaction']))) ?></td>
+                            <td class="px-4 py-3 text-capitalize"><?= esc($operation['id_type_operation']) ?></td>
+                            <td class="px-4 py-3">
+                                <?php if ($operation['id_client_source'] == $client['id']): ?>
+                                    <span class="badge bg-danger-subtle text-danger"><i class="bi bi-arrow-up-right me-1"></i>Envoyé</span>
+                                <?php else: ?>
+                                    <span class="badge bg-success-subtle text-success"><i class="bi bi-arrow-down-left me-1"></i>Reçu</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="px-4 py-3 text-end amount fw-medium">
+                                <?php if ($operation['id_client_source'] == $client['id']): ?>
+                                    <span class="text-danger">- <?= number_format($operation['montant'], 2, ',', ' ') ?></span>
+                                <?php else: ?>
+                                    <span class="text-success">+ <?= number_format($operation['montant'], 2, ',', ' ') ?></span>
+                                <?php endif; ?> Ar
+                            </td>
+                            <td class="px-4 py-3 text-end amount text-secondary"><?= number_format($operation['frais'], 2, ',', ' ') ?> Ar</td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <?= $this->endSection() ?>
