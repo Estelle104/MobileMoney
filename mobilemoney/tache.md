@@ -116,21 +116,24 @@
   - (ok) Formulaire de filtre par date
 
 
-### (...) Situation des comptes clients
+### (ok) Situation des comptes clients
 
 - Route
-  - () GET '/operateur/clients/list'
-  - () GET '/operateur/clients/detail/(:num)'
+  - (ok) GET '/operateur/clients/list'
+  - (ok) GET '/operateur/clients/detail/(:num)'
+  
 - Model
-  - () 'ClientModel::getAllByOperateur(id_operateur)' (jointure via 'prefixe')
-  - () 'ClientModel::getSoldeById(id_client)'
-  - () 'OperationModel::getHistoriqueByClient(id_client)'
+  - (ok) 'ClientModel::getAllByOperateur(id_operateur)' (jointure via 'prefixe')
+  - (ok) 'ClientModel::getSoldeById(id_client)'
+  - (ok) 'OperationModel::getHistoriqueByClient(id_client)'
+
 - Controller
-  - () 'list()' : liste des clients de l'operateur avec leur solde
-  - () 'detail($id)' : detail d'un client + historique de ses operations (verifier qu'il appartient bien a l'operateur connecte)
+  - (ok) 'list()' : liste des clients de l'operateur avec leur solde
+  - (ok) 'detail($id)' : detail d'un client + historique de ses operations (verifier qu'il appartient bien a l'operateur connecte)
+
 - Vue
-  - () Tableau des clients (numero, solde)
-  - () Page detail avec historique des operations (type, montant, frais, date)
+  - (ok) Tableau des clients (numero, solde)
+  - (ok) Page detail avec historique des operations (type, montant, frais, date)
 
 
 
