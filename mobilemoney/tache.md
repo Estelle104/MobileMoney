@@ -133,35 +133,35 @@
 ### Login automatique par numero de telephone
 
 - Route
-  - () GET '/client/login'
-  - () POST '/client/checklogin'
-  - () GET '/client/logout'
+  - (ok) GET '/client/login'
+  - (ok) POST '/client/checklogin'
+  - (ok) GET '/client/logout'
 
 - Model ('ClientModel')
-  - () Methode 'trouverOuCreerParNumero(numero)' :
-    - () Extrait les 3 premiers chiffres du numero saisi
-    - () Cherche le 'prefixe' correspondant dans 'prefixe.code'
-    - () Si aucun prefixe ne correspond -> erreur
-    - () Si le 'client.numero' existe deja -> le retourne
-    - () Sinon -> cree le client avec 'solde = 0.00' et le retourne
+  - (ok) Methode 'trouverOuCreerParNumero(numero)' :
+    - (ok) Extrait les 3 premiers chiffres du numero saisi
+    - (ok) Cherche le 'prefixe' correspondant dans 'prefixe.code'
+    - (ok) Si aucun prefixe ne correspond -> erreur
+    - (ok) Si le 'client.numero' existe deja -> le retourne
+    - (ok) Sinon -> cree le client avec 'solde = 0.00' et le retourne
 
 - Controller
-  - () 'checkLogin(numero)' : appelle 'trouverOuCreerParNumero()', stocke 'client_id' en session
-  - () Redirection vers '/client/dashboard' apres login
+  - (ok) 'checkLogin(numero)' : appelle 'trouverOuCreerParNumero()', stocke 'client_id' en session
+  - (ok) Redirection vers '/client/dashboard' apres login
   - () Si numero invalide (format ou prefixe inconnu) -> message d'erreur + retour '/client/login'
 - Vue
-  - () '/client/login' : simple formulaire avec champ "numero de telephone"
+  - (ok) '/client/login' : simple formulaire avec champ "numero de telephone"
   - () Validation JS/serveur basique du format du numero
 
 ### Operations
 
 - Voir le solde
-  - () Route GET '/client/solde'
-  - () Controller : lit 'client.solde' du client en session
-  - () Vue : affichage simple du solde courant
+  - (ok) Route GET '/client/solde'
+  - (ok) Controller : lit 'client.solde' du client en session
+  - (ok) Vue : affichage simple du solde courant
 
 - Faire un depot
-  - () Route GET '/client/depot' (formulaire) + POST '/client/depot/valider'
+  - (ok) Route GET '/client/depot' (formulaire) + POST '/client/depot/valider'
   - () Model : 'BaremeFraisModel::getFraisParMontant(id_type_operation=depot, montant)'
   - () Controller :
     - () Calcule le frais (peut etre 0 selon le bareme  pour "depot")
