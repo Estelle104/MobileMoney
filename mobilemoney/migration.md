@@ -1,3 +1,10 @@
+# Reinit
+rm writable/database/app.db
+touch writable/database/app.db
+
+# Raffraichir
+php spark migrate:refresh
+
 # Migration:
 php spark migrate
 
