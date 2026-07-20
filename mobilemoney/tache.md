@@ -203,4 +203,3 @@
   - (ok) Model : 'OperationModel::getHistoriqueByClient(id_client)' (depots, retraits, transferts envoyes/reçus)
   - (ok) Controller : recupere et trie par date decroissante
   - (ok) Vue : tableau (date, type, montant, frais, sens pour les transferts : envoye/reçu)
-

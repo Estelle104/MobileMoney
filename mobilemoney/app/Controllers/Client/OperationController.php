@@ -260,6 +260,11 @@ class OperationController extends BaseController
         $numeroDest =
             $this->request->getPost('numero_destinataire');
 
+        if (!preg_match('/^[0-9]{10}$/', $numeroDest)) {
+            return redirect()
+                ->back()
+                ->with('error', 'Le numéro du destinataire doit contenir exactement 10 chiffres.');
+        }
 
         $montant =
             (float)$this->request->getPost('montant');
