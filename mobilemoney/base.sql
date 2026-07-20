@@ -1,14 +1,22 @@
-CREATE TABLE prefixe(
+CREATE TABLE operateur(
     id INT PRIMARY KEY,
-    code VARCHAR(3) NOT NULL UNIQUE
+    nom VARCHAR(50) NOT NULL UNIQUE
 );
 
+CREATE TABLE prefixe(
+    id INT PRIMARY KEY,
+    code VARCHAR(3) NOT NULL UNIQUE,
+    id_operateur INT NOT NULL,
+    FOREIGN KEY (id_operateur) REFERENCES operateur(id)
+);
 
 CREATE TABLE client(
     id INT PRIMARY KEY,
     numero VARCHAR(20) NOT NULL UNIQUE,
+    id_prefixe INT NOT NULL,
     solde DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_prefixe) REFERENCES prefixe(id)
 );
 
 CREATE TABLE type_operation(
