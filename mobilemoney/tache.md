@@ -13,118 +13,127 @@
 
 ## Routage
 
-- () Creer les routes et les proteger avec un filtre CI4 (etu004185)
-  - () Groupe '/operateur' protege par 'AuthOperateurFilter' (verifie session 'operateur_id')
-  - () Groupe '/client' protege par 'AuthClientFilter' (verifie session 'client_id')
-  - () Routes publiques : '/operateur/login', '/client/login'
-- () Definir la structure des routes dans 'app/Config/Routes.php' avec groupes de routes
+- (ok) Creer les routes et les proteger avec un filtre CI4 (etu004185)
+  - (ok) Groupe '/operateur' protege par 'AuthOperateurFilter' (verifie session 'operateur_id')
+  - (ok) Groupe '/client' protege par 'AuthClientFilter' (verifie session 'client_id')
+  - (ok) Routes publiques : '/operateur/login', '/client/login'
+- (ok) Definir la structure des routes dans 'app/Config/Routes.php' avec groupes de routes
 
 ---
 
 ## Operateur (etu004185)
 
-### Login Operateur
+### (ok) Login Operateur
 
 - Route
-  - () GET '/operateur/login'
-  - () POST '/operateur/checklogin'
-  - () GET '/operateur/logout'
+  - (ok) GET '/operateur/login'
+  - (ok) POST '/operateur/checklogin'
+  - (ok) GET '/operateur/logout'
 
 - Model (OperateurModel)
-  - () Champs geres : 'nom', 'email', 'mdp'
-  - () Validation : email unique
-  - () Methode 'verifIdentifiants(email, mdp)' avec 'password_verify()'
+  - (ok) Champs geres : 'nom', 'email', 'mdp'
+  - (ok) Methode 'verifIdentifiants(email, mdp)' avec 'password_verify()'
 
 - Controller
-  - () 'checkLogin(email, mdp)' : verifie via le Model, stocke 'operateur_id' en session si OK
-  - () Si echec -> message d'erreur + redirection '/operateur/login'
-  - () Si deja connecte et acces a '/operateur/login' -> redirection vers '/operateur/dashboard'
-- Vue
-  - () '/operateur/login' : formulaire email/mdp + affichage flashdata erreur
+  - (ok) 'checkLogin(email, mdp)' : verifie via le Model, stocke 'operateur_id' en session si OK
+  - (ok) Si echec -> message d'erreur + redirection '/operateur/login'
+  - (ok) Si deja connecte et acces a '/operateur/login' -> redirection vers '/operateur/dashboard'
 
-### Configuration des prefixes
+- Vue
+  - (ok) '/operateur/login' : formulaire email/mdp + affichage flashdata erreur
+
+### (ok) Configuration des prefixes
 
 - Route
-  - () GET '/operateur/configuration/list'
-  - () GET '/operateur/configuration/creer'
-  - () POST '/operateur/configuration/enregistrer'
-  - () GET '/operateur/configuration/modifier/(:num)'
-  - () POST '/operateur/configuration/update/(:num)'
-  - () POST '/operateur/configuration/supprimer/(:num)'
+  - (ok) GET '/operateur/configuration/list'
+  - (ok) GET '/operateur/configuration/creer'
+  - (ok) POST '/operateur/configuration/enregistrer'
+  - (ok) GET '/operateur/configuration/modifier/(:num)'
+  - (ok) POST '/operateur/configuration/mettreajour/(:num)'
+  - (ok) POST '/operateur/configuration/supprimer/(:num)'
 
 - Model ('PrefixeModel')
-  - () Validation : 'code' exactement 3 chiffres, unique globalement
-  - () CRUD  et 'findAllByOperateur(id_operateur)'
-  - () Lors de la modification d'un 'code' : mettre a jour tous les 'client.numero' avec ce code
-  - () Avant suppression : verifier qu'aucun 'client' n'est rattache a ce prefixe  (confiramtion)
+  - (ok) Validation : 'code' exactement 3 chiffres, unique globalement
+  - (ok) CRUD  et 'findAllByOperateur(id_operateur)'
+  - (ok) Lors de la modification d'un 'code' : mettre a jour tous les 'client.numero' avec ce code
+  - (ok) Avant suppression : verifier qu'aucun 'client' n'est rattache a ce prefixe  (confiramtion)
 
 - Controller
-  - () 'list()' : liste des prefixes de l'operateur connecte
-  - () 'creer()' / 'enregistrer()' : validation formulaire + insertion (forcer 'id_operateur' = session, pas depuis le formulaire)
-  - () 'modifier($id)' / 'update($id)' : verifie que le prefixe appartient bien a l'operateur connecte avant update
-  - () 'supprimer($id)' : meme verification avant suppression
+  - (ok) 'list()' : liste des prefixes de l'operateur connecte
+  - (ok) 'creer()' / 'enregistrer()' : validation formulaire + insertion (forcer 'id_operateur' = session, pas depuis le formulaire)
+  - (ok) 'modifier($id)' / 'update($id)' : verifie que le prefixe appartient bien a l'operateur connecte avant update
+  - (ok) 'supprimer($id)' : meme verification avant suppression
 
 - Vue
-  - () Liste des prefixes (tableau) avec boutons Modifier/Supprimer + confirmation
-  - () Formulaire de creation/modification avec affichage des erreurs de validation
+  - (ok) Liste des prefixes (tableau) avec boutons Modifier/Supprimer + confirmation
+  - (ok) Formulaire de creation/modification 
 
 
-### Types d'operations et bareme de frais
+### (ok) Types d'operations et bareme de frais
 
 - Route
-  - () GET '/operateur/operation/list'
-  - () GET '/operateur/operation/ajouter'
-  - () POST '/operateur/operation/enregistrer'
-  - () GET '/operateur/operation/modifier/(:num)'
-  - () POST '/operateur/operation/update/(:num)'
-  - () POST '/operateur/operation/supprimer/(:num)'
+  - (ok) GET '/operateur/operation/list'
+  - (ok) GET '/operateur/operation/ajouter'
+  - (ok) POST '/operateur/operation/enregistrer'
+  - (ok) GET '/operateur/operation/modifier/(:num)'
+  - (ok) POST '/operateur/operation/update/(:num)'
+  - (ok) POST '/operateur/operation/supprimer/(:num)'
+
 - Model
-  - () 'TypeOperationModel' : lecture des 3 types fixes (depot, retrait, transfert)
-  - () 'BaremeFraisModel' :
-    - () Validation : 'montant_min < montant_max', 'frais >= 0'
-    - () Verifier l'absence de chevauchement de tranches pour un meme 'id_type_operation'
-    - () Methode 'getFraisParMontant(id_type_operation, montant)' -> parcourt les tranches et retourne le frais applicable
+  - (ok) 'TypeOperationModel' : lecture des 3 types fixes (depot, retrait, transfert)
+  - (ok) 'BaremeFraisModel' :
+    - (ok) Validation : 'montant_min < montant_max', 'frais >= 0'
+    - (ok) Verifier l'absence de chevauchement de tranches pour un meme 'id_type_operation'
+    - (ok) Methode 'getFraisParMontant(id_type_operation, montant)' -> parcourt les tranches et retourne le frais applicable
     - () Gerer le cas d'un montant hors de toutes les tranches (erreur metier claire)
-    - () CRUD complet pour les tranches
-- Controller
-  - () 'list($id_type_operation)' : affiche le bareme pour un type d'operation donne
-  - () 'ajouter()' / 'enregistrer()' : ajout d'une tranche avec controle de chevauchement
-  - () 'modifier($id)' / 'update($id)' : modification d'une tranche existante
-  - () 'supprimer($id)' : suppression d'une tranche
-- Vue
-  - () Tableau des tranches par type d'operation (montant_min – montant_max – frais)
-  - () Formulaire d'ajout/modification (3 champs + selecteur de type d'operation)
+    - (ok) CRUD complet pour les tranches
 
-### Situation des gains via les frais (retrait et transfert)
+- Controller
+  - (ok) 'list($id_type_operation)' : affiche le bareme pour un type d'operation donne
+  - (ok) 'ajouter()' / 'enregistrer()' : ajout d'une tranche avec controle de chevauchement
+  - (ok) 'modifier($id)' / 'update($id)' : modification d'une tranche existante
+  - (ok) 'supprimer($id)' : suppression d'une tranche
+- Vue
+  - (ok) Tableau des tranches par type d'operation (montant_min – montant_max – frais)
+  - (ok) Formulaire d'ajout/modification (avec dropdown de type d'operation)
+
+### (ok) Situation des gains via les frais (retrait et transfert)
 
 - Route
-  - () GET '/operateur/gains'
-  - () GET '/operateur/gains/filtrer'
-- Model
-  - () Methode dans 'OperationModel' : 'getTotalFraisParType(date_debut, date_fin)'
-  - () Requete agregee 'SUM(frais)' groupee par 'id_type_operation', restreinte aux clients dont le prefixe appartient a l'operateur connecte (jointure 'client' -> 'prefixe' -> 'operateur')
-- Controller
-  - () 'index()' : affiche le total des gains (retrait + transfert), depot exclu si sans frais
-  - () 'filtrer()' : applique un filtre par plage de dates (formulaire GET)
-- Vue
-  - () Dashboard avec total gains retrait / total gains transfert / total general
-  - () Formulaire de filtre par date
+  - (ok) GET '/operateur/gains'
+  - (ok) GET '/operateur/gains/filtrer'
 
-### Situation des comptes clients
+- Model
+  - (ok) Methode dans 'OperationModel' : 'getTotalFraisParType(date_debut, date_fin)'
+  - (ok) Requete agregee 'SUM(frais)' groupee par 'id_type_operation', restreinte aux clients dont le prefixe appartient a l'operateur connecte (jointure 'client' -> 'prefixe' -> 'operateur')
+
+- Controller
+  - (ok) 'index()' : affiche le total des gains (retrait + transfert), depot exclu si sans frais
+  - (ok) 'filtrer()' : applique un filtre par plage de dates (formulaire GET)
+  
+- Vue
+  - (ok) Dashboard avec total gains retrait / total gains transfert / total general
+  - (ok) Formulaire de filtre par date
+
+
+### (ok) Situation des comptes clients
 
 - Route
-  - () GET '/operateur/clients/list'
-  - () GET '/operateur/clients/detail/(:num)'
+  - (ok) GET '/operateur/clients/list'
+  - (ok) GET '/operateur/clients/detail/(:num)'
+  
 - Model
-  - () 'ClientModel::getAllByOperateur(id_operateur)' (jointure via 'prefixe')
-  - () 'ClientModel::getSoldeById(id_client)'
-  - () 'OperationModel::getHistoriqueByClient(id_client)'
+  - (ok) 'ClientModel::getAllByOperateur(id_operateur)' (jointure via 'prefixe')
+  - (ok) 'ClientModel::getSoldeById(id_client)'
+  - (ok) 'OperationModel::getHistoriqueByClient(id_client)'
+
 - Controller
-  - () 'list()' : liste des clients de l'operateur avec leur solde
-  - () 'detail($id)' : detail d'un client + historique de ses operations (verifier qu'il appartient bien a l'operateur connecte)
+  - (ok) 'list()' : liste des clients de l'operateur avec leur solde
+  - (ok) 'detail($id)' : detail d'un client + historique de ses operations (verifier qu'il appartient bien a l'operateur connecte)
+
 - Vue
-  - () Tableau des clients (numero, solde)
-  - () Page detail avec historique des operations (type, montant, frais, date)
+  - (ok) Tableau des clients (numero, solde)
+  - (ok) Page detail avec historique des operations (type, montant, frais, date)
 
 
 
@@ -133,65 +142,64 @@
 ### Login automatique par numero de telephone
 
 - Route
-  - () GET '/client/login'
-  - () POST '/client/checklogin'
-  - () GET '/client/logout'
+  - (ok) GET '/client/login'
+  - (ok) POST '/client/checklogin'
+  - (ok) GET '/client/logout'
 
 - Model ('ClientModel')
-  - () Methode 'trouverOuCreerParNumero(numero)' :
-    - () Extrait les 3 premiers chiffres du numero saisi
-    - () Cherche le 'prefixe' correspondant dans 'prefixe.code'
-    - () Si aucun prefixe ne correspond -> erreur
-    - () Si le 'client.numero' existe deja -> le retourne
-    - () Sinon -> cree le client avec 'solde = 0.00' et le retourne
+  - (ok) Methode 'trouverOuCreerParNumero(numero)' :
+    - (ok) Extrait les 3 premiers chiffres du numero saisi
+    - (ok) Cherche le 'prefixe' correspondant dans 'prefixe.code'
+    - (ok) Si aucun prefixe ne correspond -> erreur
+    - (ok) Si le 'client.numero' existe deja -> le retourne
+    - (ok) Sinon -> cree le client avec 'solde = 0.00' et le retourne
 
 - Controller
-  - () 'checkLogin(numero)' : appelle 'trouverOuCreerParNumero()', stocke 'client_id' en session
-  - () Redirection vers '/client/dashboard' apres login
+  - (ok) 'checkLogin(numero)' : appelle 'trouverOuCreerParNumero()', stocke 'client_id' en session
+  - (ok) Redirection vers '/client/dashboard' apres login
   - () Si numero invalide (format ou prefixe inconnu) -> message d'erreur + retour '/client/login'
 - Vue
-  - () '/client/login' : simple formulaire avec champ "numero de telephone"
+  - (ok) '/client/login' : simple formulaire avec champ "numero de telephone"
   - () Validation JS/serveur basique du format du numero
 
 ### Operations
 
 - Voir le solde
-  - () Route GET '/client/solde'
-  - () Controller : lit 'client.solde' du client en session
-  - () Vue : affichage simple du solde courant
+  - (ok) Route GET '/client/solde'
+  - (ok) Controller : lit 'client.solde' du client en session
+  - (ok) Vue : affichage simple du solde courant
 
 - Faire un depot
-  - () Route GET '/client/depot' (formulaire) + POST '/client/depot/valider'
-  - () Model : 'BaremeFraisModel::getFraisParMontant(id_type_operation=depot, montant)'
-  - () Controller :
-    - () Calcule le frais (peut etre 0 selon le bareme  pour "depot")
-    - () Cree l'enregistrement dans 'operation' ('id_client_source' = client, 'id_client_destinataire' = NULL)
-    - () Met a jour 'client.solde += montant'
-  - () Vue : formulaire montant + confirmation
+  - (ok) Route GET '/client/depot' (formulaire) + POST '/client/depot/valider'
+  - (ok) Model : 'BaremeFraisModel::getFraisParMontant(id_type_operation=depot, montant)'
+  - (ok) Controller :
+    - (ok) Calcule le frais (peut etre 0 selon le bareme  pour "depot")
+    - (ok) Cree l'enregistrement dans 'operation' ('id_client_source' = client, 'id_client_destinataire' = NULL)
+    - (ok) Met a jour 'client.solde += montant'
+  - (en cours) Vue : formulaire montant + confirmation
 
 - Faire un retrait 
-  - () Route GET '/client/retrait' + POST '/client/retrait/valider'
-  - () Model : 'getFraisParMontant(id_type_operation=retrait, montant)'
-  - () Controller :
-    - () Verifie que 'solde >= montant + frais' (sinon erreur "solde insuffisant")
-    - () Cree l'enregistrement 'operation'
-    - () Met a jour 'client.solde -= (montant + frais)'
+  - (ok) Route GET '/client/retrait' + POST '/client/retrait/valider'
+  - (ok) Model : 'getFraisParMontant(id_type_operation=retrait, montant)'
+  - (ok) Controller :
+    - (ok) Verifie que 'solde >= montant + frais' (sinon erreur "solde insuffisant")
+    - (ok) Cree l'enregistrement 'operation'
+    - (ok) Met a jour 'client.solde -= (montant + frais)'
   - () Vue : formulaire montant + confirmation + affichage du frais avant validation
 
 - Faire un transfert
-  - () Route GET '/client/transfert' (formulaire) + POST '/client/transfert/valider'
-  - () Model : 'getFraisParMontant(id_type_operation=transfert, montant)' + 'ClientModel::findByNumero(numero_destinataire)'
-  - () Controller :
-    - () Verifie que le numero destinataire existe (sinon erreur)
-    - () Verifie que 'solde_source >= montant + frais'
-    - () Cree l'enregistrement 'operation' ('id_client_source', 'id_client_destinataire' renseignes)
-    - () Met a jour les deux soldes : 'source -= (montant + frais)', 'destinataire += montant'
-    - () Idealement dans une transaction SQLite ('$db->transStart() / transComplete()') pour garantir la coherence
+  - (ok) Route GET '/client/transfert' (formulaire) + POST '/client/transfert/valider'
+  - (ok) Model : 'getFraisParMontant(id_type_operation=transfert, montant)' + 'ClientModel::findByNumero(numero_destinataire)'
+  - (ok) Controller :
+    - (ok) Verifie que le numero destinataire existe (sinon erreur)
+    - (ok) Verifie que 'solde_source >= montant + frais'
+    - (ok) Cree l'enregistrement 'operation' ('id_client_source', 'id_client_destinataire' renseignes)
+    - (ok) Met a jour les deux soldes : 'source -= (montant + frais)', 'destinataire += montant'
+    - (ok) Idealement dans une transaction SQLite ('$db->transStart() / transComplete()') pour garantir la coherence
   - () Vue : formulaire (numero destinataire + montant), affichage du frais avant validation
 
 - Voir les historiques
-  - () Route GET '/client/historique'
-  - () Model : 'OperationModel::getHistoriqueByClient(id_client)' (depots, retraits, transferts envoyes/reçus)
-  - () Controller : recupere et trie par date decroissante
-  - () Vue : tableau (date, type, montant, frais, sens pour les transferts : envoye/reçu)
-
+  - (ok) Route GET '/client/historique'
+  - (ok) Model : 'OperationModel::getHistoriqueByClient(id_client)' (depots, retraits, transferts envoyes/reçus)
+  - (ok) Controller : recupere et trie par date decroissante
+  - (ok) Vue : tableau (date, type, montant, frais, sens pour les transferts : envoye/reçu)
