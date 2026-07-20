@@ -303,3 +303,176 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
   - () Tableau : Operateur externe | Montant total transfere | Montant deja regle | Solde a payer
   - () Formulaire de filtre par date
   - () Formulaire d'ajout d'un reglement (montant + operateur externe concerne)
+
+
+
+
+## Cote client (etu004219)
+# Faire un transfert (Même opérateur / Autre opérateur)
+
+* Route
+
+  * () GET '/client/transfert' (inchangé)
+  * () POST '/client/transfert/valider' (à compléter)
+
+* Model
+
+  * () PrefixeModel::trouverParCode(code)
+  * () PrefixeModel::estMemeOperateur(idPrefixeSource, idPrefixeDestination)
+  * () ClientModel::getPrefixeClient(idClient)
+  * () OperateurModel::getCommissionAutreOperateur()
+  * (ok) BaremeFraisModel::getFraisParMontant(id_type_operation=transfert, montant)
+
+* Controller (validerTransfert())
+
+  * () Récupère le numéro destinataire
+  * () Extrait les 3 premiers chiffres
+  * () Récupère le préfixe du destinataire
+  * () Récupère le préfixe du client connecté
+  * () Vérifie si le transfert est vers le même opérateur
+
+#### Si même opérateur
+
+* () Calcule les frais de transfert
+* () Vérifie si "Inclure les frais de retrait" est coché
+* () Calcule les frais de retrait si nécessaire
+* () Vérifie que solde >= montant + frais_transfert + frais_retrait
+* () Crée l'opération
+* () Débite le client
+* () Créditer le destinataire
+
+#### Si autre opérateur
+
+* () Calcule les frais de transfert
+
+* () Calcule la commission supplémentaire (%)
+
+* () Vérifie que solde >= montant + frais_transfert + commission
+
+* () Crée l'opération
+
+* () Débite uniquement le client
+
+* () Enregistre le montant à envoyer à l'autre opérateur
+
+* () Ne crédite aucun client de la base
+
+* Vue
+
+  * () Afficher automatiquement si le numéro appartient au même opérateur
+  * () Afficher/Masquer la case *"Inclure les frais de retrait"*
+  * () Afficher les frais de transfert
+  * () Afficher la commission (si autre opérateur)
+  * () Afficher le total débité avant validation
+
+---
+
+## Option "Inclure les frais de retrait"
+
+* Base de données
+
+  * () Ajouter le champ frais_retrait_inclus dans la table operation
+
+* Controller (validerTransfert())
+
+  * () Lire la valeur de la case à cocher
+  * () Enregistrer frais_retrait_inclus = 1 si cochée
+  * () Ajouter les frais de retrait au montant débité
+
+* Controller (validerRetrait())
+
+  * () Vérifier si un transfert reçu possède frais_retrait_inclus = 1
+  * () Si oui, supprimer les frais de retrait
+  * () Remettre frais_retrait_inclus = 0 après utilisation
+
+---
+
+## Envoi multiple
+
+* Route
+
+  * () GET '/client/transfert-multiple'
+  * () POST '/client/transfert-multiple/valider'
+
+* Model
+
+  * (ok) ClientModel::findByNumero(numero)
+  * () ClientModel::getPrefixeClient(idClient)
+  * () PrefixeModel::estMemeOperateur(idPrefixeSource,idPrefixeDestination)
+  * (ok) BaremeFraisModel::getFraisParMontant(id_type_operation=transfert,montant)
+
+* Controller
+
+  * () transfertMultiple() : affiche le formulaire
+  * () validerTransfertMultiple() :
+
+    * () Récupère la liste des numéros
+    * () Récupère le montant total
+    * () Vérifie qu'il y a au moins deux numéros
+    * () Vérifie qu'aucun numéro n'est vide
+    * () Vérifie qu'il n'y a aucun doublon
+    * () Vérifie que tous les numéros existent
+    * () Vérifie qu'aucun numéro n'est celui du client connecté
+    * () Vérifie que tous appartiennent au même opérateur
+    * () Calcule le montant individuel (montant_total / nombre_destinataires)
+    * () Calcule les frais de chaque transfert
+    * () Calcule le montant total à débiter
+    * () Vérifie que le solde est suffisant
+    * () Lance une transaction SQLite (transStart())
+    * () Crée une opération pour chaque destinataire
+    * () Créditer chaque destinataire
+    * () Débiter le client une seule fois
+    * () Valide la transaction (transComplete())
+
+* Vue
+
+  * () Formulaire avec plusieurs numéros
+  * () Champ montant total
+  * () Affichage du montant individuel
+  * () Affichage des frais
+  * () Affichage du total débité avant validation
+
+---
+
+## Historique
+
+* Base de données
+
+  * () Ajouter le champ id_groupe_transfert dans la table operation
+
+* Model (OperationModel)
+
+  * () Adapter getHistoriqueByClient()
+  * () Regrouper les opérations ayant le même id_groupe_transfert
+
+* Controller
+
+  * () Déterminer si une opération est un transfert multiple
+  * () Envoyer cette information à la vue
+
+* Vue
+
+  * () Afficher *"Transfert multiple vers X destinataires"*
+  * () Afficher le détail si nécessaire
+
+---
+
+## Nouveaux modèles / méthodes
+
+### PrefixeModel
+
+* () trouverParCode(code)
+* () estMemeOperateur(idPrefixeSource, idPrefixeDestination)
+
+### ClientModel
+
+* (ok) findByNumero(numero)
+* () getPrefixeClient(idClient)
+
+### BaremeFraisModel
+
+* (ok) getFraisParMontant(idTypeOperation, montant)
+
+### OperateurModel
+
+* () getCommissionAutreOperateur()

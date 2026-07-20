@@ -73,4 +73,12 @@ class Prefixe extends Model
     {
         return $this->where('code', $code)->first();
     }
+
+    public function estMemeOperateur(int $idPrefixeSource, int $idPrefixeDestination): bool
+    {
+        $source = $this->find($idPrefixeSource);
+        $dest   = $this->find($idPrefixeDestination);
+        if (!$source || !$dest) return false;
+        return $source['id_operateur'] === $dest['id_operateur'];
+    }
 }
