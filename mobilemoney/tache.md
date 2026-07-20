@@ -23,24 +23,24 @@
 
 ## Operateur (etu004185)
 
-### Login Operateur
+### (ok) Login Operateur
 
 - Route
-  - () GET '/operateur/login'
-  - () POST '/operateur/checklogin'
-  - () GET '/operateur/logout'
+  - (ok) GET '/operateur/login'
+  - (ok) POST '/operateur/checklogin'
+  - (ok) GET '/operateur/logout'
 
 - Model (OperateurModel)
-  - () Champs geres : 'nom', 'email', 'mdp'
-  - () Validation : email unique
-  - () Methode 'verifIdentifiants(email, mdp)' avec 'password_verify()'
+  - (ok) Champs geres : 'nom', 'email', 'mdp'
+  - (ok) Methode 'verifIdentifiants(email, mdp)' avec 'password_verify()'
 
 - Controller
-  - () 'checkLogin(email, mdp)' : verifie via le Model, stocke 'operateur_id' en session si OK
-  - () Si echec -> message d'erreur + redirection '/operateur/login'
-  - () Si deja connecte et acces a '/operateur/login' -> redirection vers '/operateur/dashboard'
+  - (ok) 'checkLogin(email, mdp)' : verifie via le Model, stocke 'operateur_id' en session si OK
+  - (ok) Si echec -> message d'erreur + redirection '/operateur/login'
+  - (ok) Si deja connecte et acces a '/operateur/login' -> redirection vers '/operateur/dashboard'
+
 - Vue
-  - () '/operateur/login' : formulaire email/mdp + affichage flashdata erreur
+  - (ok) '/operateur/login' : formulaire email/mdp + affichage flashdata erreur
 
 ### Configuration des prefixes
 
