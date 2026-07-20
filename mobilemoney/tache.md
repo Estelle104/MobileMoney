@@ -13,11 +13,11 @@
 
 ## Routage
 
-- () Creer les routes et les proteger avec un filtre CI4 (etu004185)
-  - () Groupe '/operateur' protege par 'AuthOperateurFilter' (verifie session 'operateur_id')
-  - () Groupe '/client' protege par 'AuthClientFilter' (verifie session 'client_id')
-  - () Routes publiques : '/operateur/login', '/client/login'
-- () Definir la structure des routes dans 'app/Config/Routes.php' avec groupes de routes
+- (ok) Creer les routes et les proteger avec un filtre CI4 (etu004185)
+  - (ok) Groupe '/operateur' protege par 'AuthOperateurFilter' (verifie session 'operateur_id')
+  - (ok) Groupe '/client' protege par 'AuthClientFilter' (verifie session 'client_id')
+  - (ok) Routes publiques : '/operateur/login', '/client/login'
+- (ok) Definir la structure des routes dans 'app/Config/Routes.php' avec groupes de routes
 
 ---
 
