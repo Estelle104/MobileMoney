@@ -84,4 +84,9 @@ class Client extends Model
 
         return (bool) $this->update($idClient, ['solde' => $nouveauSolde]);
     }
+
+    public function findByNumero(string $numero): ?array
+    {
+        return $this->where('numero', $numero)->first();
+    }
 }

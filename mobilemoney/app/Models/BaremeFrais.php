@@ -47,8 +47,8 @@ class BaremeFrais extends Model
     {
         $builder = $this->where('id_type_operation', $idTypeOperation)
             ->groupStart()
-                ->where('montant_min <=', $max)
-                ->where('montant_max >=', $min)
+            ->where('montant_min <=', $max)
+            ->where('montant_max >=', $min)
             ->groupEnd();
 
         if ($ignoreId !== null) {
@@ -57,4 +57,14 @@ class BaremeFrais extends Model
 
         return $builder->countAllResults() > 0;
     }
+
+    // public function getFraisParMontant(int $idTypeOperation, float $montant): ?float
+    // {
+    //     $bareme = $this->where('id_type_operation', $idTypeOperation)
+    //         ->where('montant_min <=', $montant)
+    //         ->where('montant_max >=', $montant)
+    //         ->first();
+
+    //     return $bareme ? (float)$bareme['frais'] : null;
+    // }
 }
