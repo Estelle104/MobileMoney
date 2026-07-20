@@ -97,26 +97,26 @@
   - (ok) Tableau des tranches par type d'operation (montant_min – montant_max – frais)
   - (ok) Formulaire d'ajout/modification (avec dropdown de type d'operation)
 
-### (...) Situation des gains via les frais (retrait et transfert)
+### (ok) Situation des gains via les frais (retrait et transfert)
 
 - Route
-  - () GET '/operateur/gains'
-  - () GET '/operateur/gains/filtrer'
+  - (ok) GET '/operateur/gains'
+  - (ok) GET '/operateur/gains/filtrer'
 
 - Model
-  - () Methode dans 'OperationModel' : 'getTotalFraisParType(date_debut, date_fin)'
-  - () Requete agregee 'SUM(frais)' groupee par 'id_type_operation', restreinte aux clients dont le prefixe appartient a l'operateur connecte (jointure 'client' -> 'prefixe' -> 'operateur')
+  - (ok) Methode dans 'OperationModel' : 'getTotalFraisParType(date_debut, date_fin)'
+  - (ok) Requete agregee 'SUM(frais)' groupee par 'id_type_operation', restreinte aux clients dont le prefixe appartient a l'operateur connecte (jointure 'client' -> 'prefixe' -> 'operateur')
 
 - Controller
-  - () 'index()' : affiche le total des gains (retrait + transfert), depot exclu si sans frais
-  - () 'filtrer()' : applique un filtre par plage de dates (formulaire GET)
+  - (ok) 'index()' : affiche le total des gains (retrait + transfert), depot exclu si sans frais
+  - (ok) 'filtrer()' : applique un filtre par plage de dates (formulaire GET)
   
 - Vue
-  - () Dashboard avec total gains retrait / total gains transfert / total general
-  - () Formulaire de filtre par date
+  - (ok) Dashboard avec total gains retrait / total gains transfert / total general
+  - (ok) Formulaire de filtre par date
 
 
-### Situation des comptes clients
+### (...) Situation des comptes clients
 
 - Route
   - () GET '/operateur/clients/list'
