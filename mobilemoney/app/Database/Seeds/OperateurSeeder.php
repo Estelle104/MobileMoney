@@ -8,8 +8,7 @@ class OperateurSeeder extends Seeder
 {
     public function run()
     {
-        // Opérateurs
-        $operateurs = [
+        $this->db->table('operateur')->insertBatch([
             [
                 'nom'   => 'Orange Money',
                 'email' => 'orange@mobilemoney.mg',
@@ -25,21 +24,14 @@ class OperateurSeeder extends Seeder
                 'email' => 'airtel@mobilemoney.mg',
                 'mdp'   => password_hash('airtel123', PASSWORD_DEFAULT),
             ],
-        ];
+        ]);
 
-        $this->db->table('operateur')->insertBatch($operateurs);
-
-        // Préfixes
-        $prefixes = [
+        $this->db->table('prefixe')->insertBatch([
             ['code' => '032', 'id_operateur' => 1],
-            ['code' => '033', 'id_operateur' => 1],
-
+            ['code' => '037', 'id_operateur' => 1],
             ['code' => '034', 'id_operateur' => 2],
             ['code' => '038', 'id_operateur' => 2],
-
-            ['code' => '037', 'id_operateur' => 3],
-        ];
-
-        $this->db->table('prefixe')->insertBatch($prefixes);
+            ['code' => '033', 'id_operateur' => 3],
+        ]);
     }
 }
