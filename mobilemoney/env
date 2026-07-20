@@ -69,5 +69,5 @@
 # logger.threshold = 4
 
 database.default.DBDriver = SQLite3
-database.default.database = /home/andry/Documents/S4/Mr_Rojo/examFinalS4/MobileMoney/mobilemoney/writable/database/app.db
+database.default.database = 'writable/database/app.db'
 database.default.DBDebug  = true

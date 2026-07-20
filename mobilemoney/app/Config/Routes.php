@@ -20,9 +20,10 @@ $routes->get('operateur/logout', 'Operateur\AuthController::logout');
 // -------------------------------------------------
 $routes->group('operateur', ['filter' => 'authOperateur'], function ($routes) {
 
-    $routes->get('dashboard', 'Operateur\DashboardController::index');
+    $routes->get('dashboard', 'Operateur\OperateurController::index');
 
     // Configuration des préfixes
+    $routes->get('configuration', 'Operateur\PrefixeController::index');
     $routes->get('configuration/list', 'Operateur\PrefixeController::list');
     $routes->get('configuration/creer', 'Operateur\PrefixeController::creer');
     $routes->post('configuration/enregistrer', 'Operateur\PrefixeController::enregistrer');
