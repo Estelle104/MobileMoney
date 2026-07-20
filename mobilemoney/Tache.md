@@ -12,15 +12,22 @@
 ## Login Operateur
 - ROute 
     - /operateur/login
+    - /operateur/checklogin
 - Model
     - creation de operateur
-    - fonction checkLogin (email, mdp)
 - Controller
-
+    - fonction checkLogin (email, mdp)
+    - redirection /operateur/login
+- Vue
+    - /operateur/login
 
 ## Configuration des prefixes
 - Route 
     - /operateur/configuration
+    - /operateur/configuration/modifier
+    - /operateur/configuration/creer
+    - /operateur/configuration/supprimer
+    - /operateur/configuration/list
 - Model
     - creation du model prefixe
     - creation d'une fonction qui verifie le prefixe de l'operateur
@@ -31,4 +38,16 @@
 - Controller
     - CRUD prefixe
 - Vue
-    - log
+    - liste des prefixe avec des actions : modifer/supprimer
+    - page de creation de prefixe
+
+## Creation de types d'operations avec des barem de frais
+- Route 
+    - /operateur/operation
+    - /operateur/operation/modifier
+    - /operateur/operation/ajouter
+    - /operateur/operation/list
+    - /operateur/operation/supprimer
+- MOdel
+    - creation du model operation, type_operation, bareme_frais
+    
