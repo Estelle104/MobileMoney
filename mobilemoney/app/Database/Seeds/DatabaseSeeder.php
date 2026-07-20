@@ -8,9 +8,11 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        // ==========================
-        // OPERATEURS
-        // ==========================
+        /*
+        |--------------------------------------------------------------------------
+        | OPERATEURS
+        |--------------------------------------------------------------------------
+        */
         $this->db->table('operateur')->insertBatch([
             [
                 'nom'   => 'Orange Money',
@@ -29,9 +31,11 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        // ==========================
-        // PREFIXES
-        // ==========================
+        /*
+        |--------------------------------------------------------------------------
+        | PREFIXES
+        |--------------------------------------------------------------------------
+        */
         $this->db->table('prefixe')->insertBatch([
             ['code' => '032', 'id_operateur' => 1],
             ['code' => '033', 'id_operateur' => 1],
@@ -40,9 +44,11 @@ class DatabaseSeeder extends Seeder
             ['code' => '037', 'id_operateur' => 3],
         ]);
 
-        // ==========================
-        // CLIENTS
-        // ==========================
+        /*
+        |--------------------------------------------------------------------------
+        | CLIENTS
+        |--------------------------------------------------------------------------
+        */
         $this->db->table('client')->insertBatch([
             [
                 'numero' => '0321234567',
@@ -53,7 +59,7 @@ class DatabaseSeeder extends Seeder
             [
                 'numero' => '0327654321',
                 'id_prefixe' => 1,
-                'solde' => 300000,
+                'solde' => 350000,
                 'created_at' => date('Y-m-d H:i:s'),
             ],
             [
@@ -69,15 +75,15 @@ class DatabaseSeeder extends Seeder
                 'created_at' => date('Y-m-d H:i:s'),
             ],
             [
-                'numero' => '0382222222',
-                'id_prefixe' => 4,
-                'solde' => 400000,
+                'numero' => '0349999999',
+                'id_prefixe' => 3,
+                'solde' => 120000,
                 'created_at' => date('Y-m-d H:i:s'),
             ],
             [
-                'numero' => '0349999999',
-                'id_prefixe' => 3,
-                'solde' => 100000,
+                'numero' => '0382222222',
+                'id_prefixe' => 4,
+                'solde' => 400000,
                 'created_at' => date('Y-m-d H:i:s'),
             ],
             [
@@ -94,19 +100,24 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        // ==========================
-        // TYPES D'OPERATION
-        // ==========================
+        /*
+        |--------------------------------------------------------------------------
+        | TYPES D'OPERATIONS
+        |--------------------------------------------------------------------------
+        */
         $this->db->table('type_operation')->insertBatch([
-            ['libelle' => 'Depot'],
-            ['libelle' => 'Retrait'],
-            ['libelle' => 'Transfert'],
+            ['libelle' => 'depot'],
+            ['libelle' => 'retrait'],
+            ['libelle' => 'transfert'],
         ]);
 
-        // ==========================
-        // BAREMES DES FRAIS
-        // ==========================
+        /*
+        |--------------------------------------------------------------------------
+        | BAREMES DES FRAIS
+        |--------------------------------------------------------------------------
+        */
         $this->db->table('bareme_frais')->insertBatch([
+
             // DEPOT
             [
                 'id_type_operation' => 1,
@@ -174,10 +185,13 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        // ==========================
-        // OPERATIONS
-        // ==========================
+        /*
+        |--------------------------------------------------------------------------
+        | OPERATIONS
+        |--------------------------------------------------------------------------
+        */
         $this->db->table('operation')->insertBatch([
+
             [
                 'id_client_source' => 1,
                 'id_client_destinataire' => null,
@@ -186,6 +200,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 0,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 2,
                 'id_client_destinataire' => null,
@@ -194,6 +209,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 500,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 3,
                 'id_client_destinataire' => 7,
@@ -202,6 +218,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 300,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 4,
                 'id_client_destinataire' => 1,
@@ -210,6 +227,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 700,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 5,
                 'id_client_destinataire' => null,
@@ -218,6 +236,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 2500,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 6,
                 'id_client_destinataire' => null,
@@ -226,6 +245,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 0,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 7,
                 'id_client_destinataire' => 8,
@@ -234,6 +254,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 1500,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 8,
                 'id_client_destinataire' => 2,
@@ -242,6 +263,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 300,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 1,
                 'id_client_destinataire' => 4,
@@ -250,6 +272,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 1500,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 2,
                 'id_client_destinataire' => null,
@@ -258,6 +281,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 5000,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 5,
                 'id_client_destinataire' => 3,
@@ -266,6 +290,7 @@ class DatabaseSeeder extends Seeder
                 'frais' => 700,
                 'date_transaction' => date('Y-m-d H:i:s'),
             ],
+
             [
                 'id_client_source' => 7,
                 'id_client_destinataire' => null,
