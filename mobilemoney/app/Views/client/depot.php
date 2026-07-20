@@ -16,6 +16,14 @@
             <form method="post" action="<?= site_url('client/depot/valider') ?>">
                 <?= csrf_field() ?>
 
+                <div class="mb-3">
+                    <label for="numero" class="form-label text-label">Numéro du compte</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-end-0 bg-transparent text-secondary"><i class="bi bi-person"></i></span>
+                        <input type="text" name="numero" id="numero" class="form-control border-start-0 ps-0" placeholder="Ex: 0340000000" minlength="10" maxlength="10" pattern="[0-9]{10}" title="Le numéro doit contenir exactement 10 chiffres" required>
+                    </div>
+                </div>
+
                 <div class="mb-4">
                     <label for="montant" class="form-label text-label">Montant du dépôt</label>
                     <div class="input-group">
@@ -41,8 +49,16 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const montantInput = document.getElementById('montant');
+    const numeroInput = document.getElementById('numero');
+
     if(montantInput){
         montantInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+        });
+    }
+
+    if(numeroInput){
+        numeroInput.addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '');
         });
     }
