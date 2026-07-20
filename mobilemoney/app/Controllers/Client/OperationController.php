@@ -8,8 +8,6 @@ use App\Models\Client;
 use App\Models\Operation;
 use App\Models\BaremeFrais;
 use App\Models\TypeOperation;
-use App\Models\Prefixe;
-use App\Models\Transfert\PrefixeExterne;
 
 
 class OperationController extends BaseController
@@ -255,209 +253,6 @@ class OperationController extends BaseController
         return view('client/transfert');
     }
 
-    // public function validerTransfert()
-    // {
-
-    //     $numeroDest =
-    //         $this->request->getPost('numero_destinataire');
-
-    //     if (!preg_match('/^[0-9]{10}$/', $numeroDest)) {
-    //         return redirect()
-    //             ->back()
-    //             ->with('error', 'Le numéro du destinataire doit contenir exactement 10 chiffres.');
-    //     }
-
-    //     $montant =
-    //         (float)$this->request->getPost('montant');
-
-
-
-    //     if ($montant <= 0) {
-    //         return redirect()
-    //             ->back()
-    //             ->with('error', 'Montant invalide');
-    //     }
-
-
-
-    //     $db = \Config\Database::connect();
-
-    //     $db->transStart();
-
-
-
-    //     $clientModel = new Client();
-
-    //     $operationModel = new Operation();
-
-    //     $baremeModel = new BaremeFrais();
-
-    //     $typeModel = new TypeOperation();
-
-
-
-    //     // client source
-
-    //     $idSource =
-    //         session()->get('client_id');
-
-
-
-    //     $source =
-    //         $clientModel->find($idSource);
-
-
-
-    //     // destinataire
-
-    //     $destinataire =
-    //         $clientModel
-    //         ->findByNumero($numeroDest);
-
-
-
-    //     if (!$destinataire) {
-
-    //         return redirect()
-    //             ->back()
-    //             ->with(
-    //                 'error',
-    //                 'Destinataire introuvable'
-    //             );
-    //     }
-
-
-
-    //     if ($destinataire['id'] == $idSource) {
-
-    //         return redirect()
-    //             ->back()
-    //             ->with(
-    //                 'error',
-    //                 'Impossible de se transférer à soi-même'
-    //             );
-    //     }
-
-
-
-    //     // type transfert
-
-    //     $idTransfert =
-    //         $typeModel
-    //         ->getIdParLibelle('transfert');
-
-
-
-    //     // frais
-
-    //     $frais =
-    //         $baremeModel
-    //         ->getFraisParMontant(
-    //             $idTransfert,
-    //             $montant
-    //         );
-
-
-    //     if ($frais === null) {
-    //         $frais = 0;
-    //     }
-
-
-
-    //     // solde suffisant
-
-    //     if ($source['solde'] < ($montant + $frais)) {
-
-    //         return redirect()
-    //             ->back()
-    //             ->with(
-    //                 'error',
-    //                 'Solde insuffisant'
-    //             );
-    //     }
-
-
-
-    //     // insertion opération
-
-    //     $operationModel->insert([
-
-    //         'id_client_source' => $idSource,
-
-    //         'id_client_destinataire' => $destinataire['id'],
-
-    //         'id_type_operation' => $idTransfert,
-
-    //         'montant' => $montant,
-
-    //         'frais' => $frais
-
-    //     ]);
-
-
-
-    //     // retirer source
-
-    //     $clientModel->update(
-
-    //         $idSource,
-
-    //         [
-
-    //             'solde' =>
-    //             $source['solde']
-    //                 -
-    //                 ($montant + $frais)
-
-    //         ]
-
-    //     );
-
-
-
-    //     // créditer destinataire
-
-    //     $clientModel->update(
-
-    //         $destinataire['id'],
-
-    //         [
-
-    //             'solde' =>
-    //             $destinataire['solde']
-    //                 +
-    //                 $montant
-
-    //         ]
-
-    //     );
-
-
-
-    //     $db->transComplete();
-
-
-
-    //     if (!$db->transStatus()) {
-
-    //         return redirect()
-    //             ->back()
-    //             ->with(
-    //                 'error',
-    //                 'Erreur transfert'
-    //             );
-    //     }
-
-
-
-    //     return redirect()
-    //         ->to('/client/solde')
-    //         ->with(
-    //             'success',
-    //             'Transfert effectué'
-    //         );
-    // }
-
     public function validerTransfert()
     {
 
@@ -474,6 +269,7 @@ class OperationController extends BaseController
             (float)$this->request->getPost('montant');
 
 
+
         if ($montant <= 0) {
             return redirect()
                 ->back()
@@ -481,13 +277,11 @@ class OperationController extends BaseController
         }
 
 
-        $inclureRetrait =
-            $this->request->getPost('inclure_frais_retrait') == 1;
-
 
         $db = \Config\Database::connect();
 
         $db->transStart();
+
 
 
         $clientModel = new Client();
@@ -498,9 +292,6 @@ class OperationController extends BaseController
 
         $typeModel = new TypeOperation();
 
-        $prefixeModel = new Prefixe();
-
-        $prefixeExterneModel = new PrefixeExterne();
 
 
         // client source
@@ -509,186 +300,46 @@ class OperationController extends BaseController
             session()->get('client_id');
 
 
+
         $source =
             $clientModel->find($idSource);
 
 
-        // code préfixe du numéro saisi
 
-        $codePrefixeDest = substr($numeroDest, 0, 3);
-
-
-        // on cherche d'abord si ce préfixe appartient à NOTRE opérateur
+        // destinataire
 
         $destinataire =
             $clientModel
             ->findByNumero($numeroDest);
+            
+        $isExterne = false;
+        $prefixeExterne = null;
 
-
-        // -----------------------------------------------------
-        // CAS 1 : TRANSFERT INTERNE (le numéro existe chez nous)
-        // -----------------------------------------------------
-
-        if ($destinataire) {
-
-            if ($destinataire['id'] == $idSource) {
-
+        if (!$destinataire) {
+            $prefixeCode = substr($numeroDest, 0, 3);
+            $extModel = new \App\Models\PrefixeExterneModel();
+            $prefixeExterne = $extModel->estPrefixeExterne($prefixeCode);
+            
+            if (!$prefixeExterne) {
                 return redirect()
                     ->back()
                     ->with(
                         'error',
-                        'Impossible de se transférer à soi-même'
+                        'Opérateur destinataire inconnu ou destinataire introuvable'
                     );
             }
-
-
-            // type transfert
-
-            $idTransfert =
-                $typeModel
-                ->getIdParLibelle('transfert');
-
-
-            // frais de transfert
-
-            $frais =
-                $baremeModel
-                ->getFraisParMontant(
-                    $idTransfert,
-                    $montant
-                );
-
-            if ($frais === null) {
-                $frais = 0;
-            }
-
-
-            // frais de retrait (uniquement si option cochée, interne uniquement)
-
-            $fraisRetrait = 0;
-
-            if ($inclureRetrait) {
-
-                $idRetrait =
-                    $typeModel
-                    ->getIdParLibelle('retrait');
-
-                $fraisRetrait =
-                    $baremeModel
-                    ->getFraisParMontant(
-                        $idRetrait,
-                        $montant
-                    );
-
-                if ($fraisRetrait === null) {
-                    $fraisRetrait = 0;
-                }
-            }
-
-
-            $total =
-                $montant
-                + $frais
-                + $fraisRetrait;
-
-
-            if ($source['solde'] < $total) {
-
-                return redirect()
-                    ->back()
-                    ->with(
-                        'error',
-                        'Solde insuffisant'
-                    );
-            }
-
-
-            $operationModel->insert([
-
-                'id_client_source' => $idSource,
-
-                'id_client_destinataire' => $destinataire['id'],
-
-                'numero_destinataire_externe' => null,
-
-                'id_prefixe_externe' => null,
-
-                'id_type_operation' => $idTransfert,
-
-                'montant' => $montant,
-
-                'frais' => $frais,
-
-                'frais_retrait_inclus' => $inclureRetrait ? 1 : 0
-
-            ]);
-
-
-            $clientModel->update(
-
-                $idSource,
-
-                [
-                    'solde' => $source['solde'] - $total
-                ]
-
-            );
-
-
-            $clientModel->update(
-
-                $destinataire['id'],
-
-                [
-                    'solde' => $destinataire['solde'] + $montant
-                ]
-
-            );
-
-
-            $db->transComplete();
-
-
-            if (!$db->transStatus()) {
-
-                return redirect()
-                    ->back()
-                    ->with('error', 'Erreur transfert');
-            }
-
-
-            $message = 'Transfert effectué';
-
-            if ($inclureRetrait) {
-                $message .= ' (frais de retrait inclus)';
-            }
-
-
-            return redirect()
-                ->to('/client/solde')
-                ->with('success', $message);
+            $isExterne = true;
         }
 
-
-        // -----------------------------------------------------
-        // CAS 2 : TRANSFERT EXTERNE (numéro absent chez nous)
-        // -----------------------------------------------------
-
-        $prefixeExterne =
-            $prefixeExterneModel
-            ->trouverParCode($codePrefixeDest);
-
-
-        if (!$prefixeExterne) {
+        if (!$isExterne && $destinataire['id'] == $idSource) {
 
             return redirect()
                 ->back()
                 ->with(
                     'error',
-                    'Ce numéro n\'appartient à aucun opérateur reconnu.'
+                    'Impossible de se transférer à soi-même'
                 );
         }
-
 
         // type transfert
 
@@ -696,8 +347,7 @@ class OperationController extends BaseController
             $typeModel
             ->getIdParLibelle('transfert');
 
-
-        // frais de transfert normal
+        // frais
 
         $frais =
             $baremeModel
@@ -709,24 +359,14 @@ class OperationController extends BaseController
         if ($frais === null) {
             $frais = 0;
         }
+        
+        if ($isExterne) {
+            $frais += $montant * ($prefixeExterne['pourcentage_commission'] / 100);
+        }
 
+        // solde suffisant
 
-        // commission supplémentaire (en %)
-
-        $commission =
-            $montant
-            * ($prefixeExterne['commission'] / 100);
-
-
-        // pas d'option frais de retrait pour un autre opérateur
-
-        $total =
-            $montant
-            + $frais
-            + $commission;
-
-
-        if ($source['solde'] < $total) {
+        if ($source['solde'] < ($montant + $frais)) {
 
             return redirect()
                 ->back()
@@ -736,124 +376,66 @@ class OperationController extends BaseController
                 );
         }
 
+        // insertion opération
 
         $operationModel->insert([
-
             'id_client_source' => $idSource,
-
-            'id_client_destinataire' => null,
-
-            'numero_destinataire_externe' => $numeroDest,
-
-            'id_prefixe_externe' => $prefixeExterne['id'],
-
+            'id_client_destinataire' => $isExterne ? null : $destinataire['id'],
+            'numero_destinataire_externe' => $isExterne ? $numeroDest : null,
+            'id_prefixe_externe' => $isExterne ? $prefixeExterne['id'] : null,
             'id_type_operation' => $idTransfert,
-
             'montant' => $montant,
-
-            'frais' => $frais + $commission,
-
-            'frais_retrait_inclus' => 0
-
+            'frais' => $frais
         ]);
 
+        // retirer source
 
         $clientModel->update(
-
             $idSource,
-
             [
-                'solde' => $source['solde'] - $total
+                'solde' =>
+                $source['solde']
+                    -
+                    ($montant + $frais)
             ]
-
         );
 
+        // créditer destinataire
 
-        // pas de crédit destinataire : il n'est pas géré par notre système
-
+        if (!$isExterne) {
+            $clientModel->update(
+                $destinataire['id'],
+                [
+                    'solde' =>
+                    $destinataire['solde']
+                        +
+                        $montant
+                ]
+            );
+        }
 
         $db->transComplete();
+
 
 
         if (!$db->transStatus()) {
 
             return redirect()
                 ->back()
-                ->with('error', 'Erreur transfert');
+                ->with(
+                    'error',
+                    'Erreur transfert'
+                );
         }
+
 
 
         return redirect()
             ->to('/client/solde')
             ->with(
                 'success',
-                'Transfert vers ' . esc($prefixeExterne['nom_operateur']) . ' effectué'
+                'Transfert effectué'
             );
-    }
-
-    public function verifierDestinataire()
-    {
-        $numero = $this->request->getPost('numero');
-
-        if (!preg_match('/^[0-9]{10}$/', $numero)) {
-            return $this->response->setJSON([
-                'valide' => false
-            ]);
-        }
-
-        $clientModel = new Client();
-        $prefixeModel = new Prefixe();
-        $prefixeExterneModel = new PrefixeExterne();
-
-        $idClient = session()->get('client_id');
-
-        $destinataire = $clientModel->findByNumero($numero);
-
-        // Cas 1 : client interne
-        if ($destinataire) {
-
-            if ($destinataire['id'] == $idClient) {
-                return $this->response->setJSON([
-                    'valide' => false,
-                    'erreur' => 'soi-meme'
-                ]);
-            }
-
-            $source = $clientModel->find($idClient);
-
-            $prefixeSource = $prefixeModel->find($source['id_prefixe']);
-            $prefixeDest = $prefixeModel->find($destinataire['id_prefixe']);
-
-            $memeOperateur =
-                $prefixeSource['id_operateur'] == $prefixeDest['id_operateur'];
-
-            return $this->response->setJSON([
-                'valide' => true,
-                'type' => 'interne',
-                'meme_operateur' => $memeOperateur
-            ]);
-        }
-
-        // Cas 2 : externe
-        $code = substr($numero, 0, 3);
-
-        $prefixeExterne = $prefixeExterneModel->trouverParCode($code);
-
-        if ($prefixeExterne) {
-            return $this->response->setJSON([
-                'valide' => true,
-                'type' => 'externe',
-                'meme_operateur' => false,
-                'nom_operateur' => $prefixeExterne['nom_operateur'],
-                'commission' => $prefixeExterne['commission']
-            ]);
-        }
-
-        // Cas 3 : préfixe totalement inconnu
-        return $this->response->setJSON([
-            'valide' => false,
-            'erreur' => 'inconnu'
-        ]);
     }
 
     public function historique()
@@ -881,6 +463,7 @@ class OperationController extends BaseController
     {
         $montant = (float)$this->request->getPost('montant');
         $type = $this->request->getPost('type_operation');
+        $numero = $this->request->getPost('numero_destinataire');
 
         if ($montant <= 0 || !$type) {
             return $this->response->setJSON(['frais' => 0]);
@@ -895,7 +478,20 @@ class OperationController extends BaseController
         }
 
         $frais = $baremeModel->getFraisParMontant($idType, $montant);
+        $frais = $frais === null ? 0 : $frais;
 
-        return $this->response->setJSON(['frais' => $frais === null ? 0 : $frais]);
+        if ($type === 'transfert' && $numero && strlen($numero) >= 3) {
+            $prefixeCode = substr($numero, 0, 3);
+            $clientModel = new Client();
+            if (!$clientModel->findByNumero($numero)) {
+                $extModel = new \App\Models\PrefixeExterneModel();
+                $ext = $extModel->estPrefixeExterne($prefixeCode);
+                if ($ext) {
+                    $frais += $montant * ($ext['pourcentage_commission'] / 100);
+                }
+            }
+        }
+        
+        return $this->response->setJSON(['frais' => $frais]);
     }
 }

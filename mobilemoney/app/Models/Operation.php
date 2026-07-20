@@ -16,11 +16,36 @@ class Operation extends Model
         'id_type_operation',
         'montant',
         'frais',
+        'numero_destinataire_externe',
+        'id_prefixe_externe'
     ];
 
     protected $useTimestamps = true;
     protected $createdField  = 'date_transaction';
     protected $updatedField  = '';
+
+    protected $beforeInsert = ['validateDestinataire'];
+
+    protected function validateDestinataire(array $data)
+    {
+        if (isset($data['data']['id_type_operation'])) {
+            $typeModel = new TypeOperation();
+            $idTransfert = $typeModel->getIdParLibelle('transfert');
+            
+            if ($data['data']['id_type_operation'] == $idTransfert) {
+                $hasInterne = !empty($data['data']['id_client_destinataire']);
+                $hasExterne = !empty($data['data']['numero_destinataire_externe']) && !empty($data['data']['id_prefixe_externe']);
+                
+                if ($hasInterne && $hasExterne) {
+                    throw new \Exception("Un transfert ne peut pas avoir un destinataire interne et externe à la fois.");
+                }
+                if (!$hasInterne && !$hasExterne) {
+                    throw new \Exception("Un transfert doit avoir un destinataire (interne ou externe).");
+                }
+            }
+        }
+        return $data;
+    }
 
     protected $validationRules = [
         'id_client_source'  => 'required|integer',
@@ -104,6 +129,49 @@ class Operation extends Model
             ->join('type_operation', 'type_operation.id = operation.id_type_operation')
             ->where('prefixe.id_operateur', $idOperateur)
             ->groupBy('type_operation.libelle');
+
+        if ($dateDebut) {
+            $builder->where('operation.date_transaction >=', $dateDebut . ' 00:00:00');
+        }
+        if ($dateFin) {
+            $builder->where('operation.date_transaction <=', $dateFin . ' 23:59:59');
+        }
+
+        return $builder->findAll();
+    }
+
+    public function getTotalFraisParTypeEtDestination(int $idOperateur, ?string $dateDebut = null, ?string $dateFin = null): array
+    {
+        $builder = $this->select("
+                type_operation.libelle, 
+                (CASE WHEN operation.id_prefixe_externe IS NULL THEN 'interne' ELSE 'externe' END) as destination,
+                SUM(operation.frais) as total_frais
+            ")
+            ->join('client', 'client.id = operation.id_client_source')
+            ->join('prefixe', 'prefixe.id = client.id_prefixe')
+            ->join('type_operation', 'type_operation.id = operation.id_type_operation')
+            ->where('prefixe.id_operateur', $idOperateur)
+            ->groupBy("type_operation.libelle, (CASE WHEN operation.id_prefixe_externe IS NULL THEN 'interne' ELSE 'externe' END)");
+
+        if ($dateDebut) {
+            $builder->where('operation.date_transaction >=', $dateDebut . ' 00:00:00');
+        }
+        if ($dateFin) {
+            $builder->where('operation.date_transaction <=', $dateFin . ' 23:59:59');
+        }
+
+        return $builder->findAll();
+    }
+
+    public function getMontantsParOperateurExterne(int $idOperateur, ?string $dateDebut = null, ?string $dateFin = null): array
+    {
+        $builder = $this->select('prefixe_externe.nom_operateur_externe, SUM(operation.montant) as total_montant')
+            ->join('client as source', 'source.id = operation.id_client_source')
+            ->join('prefixe as p_source', 'p_source.id = source.id_prefixe')
+            ->join('prefixe_externe', 'prefixe_externe.id = operation.id_prefixe_externe')
+            ->where('p_source.id_operateur', $idOperateur)
+            ->where('operation.id_prefixe_externe IS NOT NULL')
+            ->groupBy('prefixe_externe.nom_operateur_externe');
 
         if ($dateDebut) {
             $builder->where('operation.date_transaction >=', $dateDebut . ' 00:00:00');
