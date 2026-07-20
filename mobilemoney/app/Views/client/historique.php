@@ -59,10 +59,17 @@
                                 </td>
                                 <td class="pe-4 py-3">
                                     <?php if ($operation['type_operation'] == "transfert"): ?>
-                                        <?php if ($operation['numero_source'] == session('numero')): ?>
+                                        <?php if (!empty($operation['is_transfert_multiple'])): ?>
+                                            <div class="d-inline-flex align-items-center bg-light rounded-pill px-3 py-1">
+                                                <i class="bi bi-people text-primary me-2"></i>
+                                                <span class="small text-secondary">
+                                                    Transfert multiple vers <strong class="text-dark"><?= esc($operation['nb_destinataires']) ?></strong> destinataires
+                                                </span>
+                                            </div>
+                                        <?php elseif ($operation['numero_source'] == session('numero')): ?>
                                             <div class="d-inline-flex align-items-center bg-light rounded-pill px-3 py-1">
                                                 <i class="bi bi-arrow-right text-danger me-2"></i>
-                                                <span class="small text-secondary">Vers <strong class="text-dark"><?= esc($operation['numero_destinataire']) ?></strong></span>
+                                                <span class="small text-secondary">Vers <strong class="text-dark"><?= esc($operation['numero_destinataire'] ?? $operation['numero_destinataire_externe']) ?></strong></span>
                                             </div>
                                         <?php else: ?>
                                             <div class="d-inline-flex align-items-center bg-light rounded-pill px-3 py-1">

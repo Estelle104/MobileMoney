@@ -307,7 +307,7 @@ Note : le pourcentage n'est plus global par operateur, il est propre a chaque 'p
 
 
 
-## Cote client (etu004219)
+## V2- Cote client (etu004219)
 # Faire un transfert (Même opérateur / Autre opérateur)
 
 * Route
