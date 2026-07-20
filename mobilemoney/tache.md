@@ -72,28 +72,30 @@
 ### Types d'operations et bareme de frais
 
 - Route
-  - () GET '/operateur/operation/list'
-  - () GET '/operateur/operation/ajouter'
-  - () POST '/operateur/operation/enregistrer'
-  - () GET '/operateur/operation/modifier/(:num)'
-  - () POST '/operateur/operation/update/(:num)'
-  - () POST '/operateur/operation/supprimer/(:num)'
+  - (ok) GET '/operateur/operation/list'
+  - (ok) GET '/operateur/operation/ajouter'
+  - (ok) POST '/operateur/operation/enregistrer'
+  - (ok) GET '/operateur/operation/modifier/(:num)'
+  - (ok) POST '/operateur/operation/update/(:num)'
+  - (ok) POST '/operateur/operation/supprimer/(:num)'
+
 - Model
-  - () 'TypeOperationModel' : lecture des 3 types fixes (depot, retrait, transfert)
-  - () 'BaremeFraisModel' :
-    - () Validation : 'montant_min < montant_max', 'frais >= 0'
-    - () Verifier l'absence de chevauchement de tranches pour un meme 'id_type_operation'
-    - () Methode 'getFraisParMontant(id_type_operation, montant)' -> parcourt les tranches et retourne le frais applicable
+  - (ok) 'TypeOperationModel' : lecture des 3 types fixes (depot, retrait, transfert)
+  - (ok) 'BaremeFraisModel' :
+    - (ok) Validation : 'montant_min < montant_max', 'frais >= 0'
+    - (ok) Verifier l'absence de chevauchement de tranches pour un meme 'id_type_operation'
+    - (ok) Methode 'getFraisParMontant(id_type_operation, montant)' -> parcourt les tranches et retourne le frais applicable
     - () Gerer le cas d'un montant hors de toutes les tranches (erreur metier claire)
-    - () CRUD complet pour les tranches
+    - (ok) CRUD complet pour les tranches
+
 - Controller
-  - () 'list($id_type_operation)' : affiche le bareme pour un type d'operation donne
-  - () 'ajouter()' / 'enregistrer()' : ajout d'une tranche avec controle de chevauchement
-  - () 'modifier($id)' / 'update($id)' : modification d'une tranche existante
-  - () 'supprimer($id)' : suppression d'une tranche
+  - (ok) 'list($id_type_operation)' : affiche le bareme pour un type d'operation donne
+  - (ok) 'ajouter()' / 'enregistrer()' : ajout d'une tranche avec controle de chevauchement
+  - (ok) 'modifier($id)' / 'update($id)' : modification d'une tranche existante
+  - (ok) 'supprimer($id)' : suppression d'une tranche
 - Vue
-  - () Tableau des tranches par type d'operation (montant_min – montant_max – frais)
-  - () Formulaire d'ajout/modification (3 champs + selecteur de type d'operation)
+  - (ok) Tableau des tranches par type d'operation (montant_min – montant_max – frais)
+  - (ok) Formulaire d'ajout/modification (avec dropdown de type d'operation)
 
 ### Situation des gains via les frais (retrait et transfert)
 
