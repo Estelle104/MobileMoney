@@ -1,49 +1,87 @@
-<h2>
-    Faire un retrait
-</h2>
+<?= $this->extend('layouts/client') ?>
 
+<?= $this->section('content') ?>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card p-4 p-md-5">
+            <h3 class="mb-1 text-center"><i class="bi bi-arrow-up-circle text-danger me-2"></i> Faire un retrait</h3>
+            <p class="text-secondary text-center mb-4 small">Retirez de l'argent de votre compte</p>
 
-<?php if (session()->getFlashdata('error')): ?>
+            <?php if (session()->getFlashdata('error')): ?>
+                <div class="alert alert-danger border-0 bg-danger-subtle text-danger rounded-3">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> <?= session()->getFlashdata('error') ?>
+                </div>
+            <?php endif; ?>
 
-    <p style="color:red">
+            <form method="post" action="<?= site_url('client/retrait/valider') ?>">
+                <?= csrf_field() ?>
 
-        <?= session()->getFlashdata('error') ?>
+                <div class="mb-4">
+                    <label for="montant" class="form-label text-label">Montant du retrait</label>
+                    <div class="input-group">
+                        <span class="input-group-text border-end-0 bg-transparent text-secondary">Ar</span>
+                        <input type="text" name="montant" id="montant" class="form-control border-start-0 ps-0" placeholder="Ex: 20000" required>
+                    </div>
+                </div>
 
-    </p>
+                <div class="mb-4 d-flex justify-content-between align-items-center p-3 rounded-3" style="background-color: #F8FAFC; border: 1px dashed #CBD5E1;">
+                    <span class="text-secondary fw-medium small">Frais estimés</span>
+                    <span class="fs-5 fw-bold text-dark"><span id="frais">0</span> <span class="fs-6 fw-normal text-secondary">Ar</span></span>
+                </div>
 
-<?php endif; ?>
+                <button type="submit" class="btn btn-primary w-100 py-3 mb-3">
+                    Confirmer le retrait
+                </button>
+                
+                <a href="<?= site_url('client/dashboard') ?>" class="text-decoration-none text-secondary d-block text-center small fw-medium">
+                    <i class="bi bi-arrow-left me-1"></i> Annuler et retourner
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+<?= $this->endSection() ?>
 
+<?= $this->section('scripts') ?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const montantInput = document.getElementById('montant');
+    const fraisSpan = document.getElementById('frais');
+    let timeout = null;
 
-<form method="post"
-    action="<?= site_url('client/retrait/valider') ?>">
+    montantInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        
+        clearTimeout(timeout);
+        const montant = this.value;
+        
+        if (montant === '' || montant == 0) {
+            fraisSpan.textContent = '0';
+            return;
+        }
 
-
-    <?= csrf_field() ?>
-
-
-    <label>
-        Montant
-    </label>
-
-
-    <input
-        type="number"
-        name="montant"
-        id="montant"
-        required>
-
-
-    <p>
-        Frais :
-        <span id="frais">
-            0
-        </span> Ar
-    </p>
-
-
-    <button>
-        Valider
-    </button>
-
-
-</form>
+        timeout = setTimeout(() => {
+            fetch('<?= site_url('client/calcul-frais') ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new URLSearchParams({
+                    '<?= csrf_token() ?>': '<?= csrf_hash() ?>',
+                    'montant': montant,
+                    'type_operation': 'retrait'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.frais !== undefined) {
+                    fraisSpan.textContent = new Intl.NumberFormat('fr-FR').format(data.frais);
+                }
+            })
+            .catch(error => console.error('Error fetching frais:', error));
+        }, 500);
+    });
+});
+</script>
+<?= $this->endSection() ?>

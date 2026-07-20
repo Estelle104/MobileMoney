@@ -17,7 +17,7 @@ class Client extends Model
     protected $updatedField  = '';
 
     protected $validationRules = [
-        'numero'     => 'required|min_length[8]|is_unique[client.numero,id,{id}]',
+        'numero'     => 'required|exact_length[10]|numeric|is_unique[client.numero,id,{id}]',
         'id_prefixe' => 'required|integer',
         'solde'      => 'permit_empty|decimal',
     ];
@@ -25,6 +25,10 @@ class Client extends Model
 
     public function trouverOuCreerParNumero(string $numero): ?array
     {
+        if (!preg_match('/^[0-9]{10}$/', $numero)) {
+            throw new \Exception("Le format du numéro est invalide. Il doit contenir exactement 10 chiffres.");
+        }
+
         $existant = $this->where('numero', $numero)->first();
         if ($existant) {
             return $existant;
