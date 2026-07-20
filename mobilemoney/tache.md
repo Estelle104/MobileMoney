@@ -69,7 +69,7 @@
   - (ok) Formulaire de creation/modification 
 
 
-### Types d'operations et bareme de frais
+### (ok) Types d'operations et bareme de frais
 
 - Route
   - (ok) GET '/operateur/operation/list'
@@ -97,20 +97,24 @@
   - (ok) Tableau des tranches par type d'operation (montant_min – montant_max – frais)
   - (ok) Formulaire d'ajout/modification (avec dropdown de type d'operation)
 
-### Situation des gains via les frais (retrait et transfert)
+### (...) Situation des gains via les frais (retrait et transfert)
 
 - Route
   - () GET '/operateur/gains'
   - () GET '/operateur/gains/filtrer'
+
 - Model
   - () Methode dans 'OperationModel' : 'getTotalFraisParType(date_debut, date_fin)'
   - () Requete agregee 'SUM(frais)' groupee par 'id_type_operation', restreinte aux clients dont le prefixe appartient a l'operateur connecte (jointure 'client' -> 'prefixe' -> 'operateur')
+
 - Controller
   - () 'index()' : affiche le total des gains (retrait + transfert), depot exclu si sans frais
   - () 'filtrer()' : applique un filtre par plage de dates (formulaire GET)
+  
 - Vue
   - () Dashboard avec total gains retrait / total gains transfert / total general
   - () Formulaire de filtre par date
+
 
 ### Situation des comptes clients
 
