@@ -28,7 +28,7 @@ CREATE TABLE barem_frais(
 CREATE TABLE transaction(
     id INT PRIMARY KEY,
     id_client_source INT NOT NULL,
-    id_client_destinataire INT NOT NULL,
+    id_client_destinataire INT,
     id_type_operation INT NOT NULL,
     montant DECIMAL(10, 2) NOT NULL,
     frais DECIMAL(10, 2) NOT NULL,
