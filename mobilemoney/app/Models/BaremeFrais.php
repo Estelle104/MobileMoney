@@ -52,4 +52,14 @@ class BaremeFrais extends Model
 
         return $builder->countAllResults() > 0;
     }
+
+    // public function getFraisParMontant(int $idTypeOperation, float $montant): ?float
+    // {
+    //     $bareme = $this->where('id_type_operation', $idTypeOperation)
+    //         ->where('montant_min <=', $montant)
+    //         ->where('montant_max >=', $montant)
+    //         ->first();
+
+    //     return $bareme ? (float)$bareme['frais'] : null;
+    // }
 }
