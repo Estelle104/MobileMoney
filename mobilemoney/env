@@ -67,3 +67,7 @@
 #--------------------------------------------------------------------
 
 # logger.threshold = 4
+
+database.default.DBDriver = SQLite3
+database.default.database = WRITEPATH . 'database/app.db'
+database.default.DBDebug  = true
