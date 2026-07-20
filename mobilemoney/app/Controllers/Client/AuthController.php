@@ -10,7 +10,7 @@ class AuthController extends BaseController
 
     public function login()
     {
-        return view('Client/login');
+        return view('client/login');
     }
 
     //----------------------------------------------------
@@ -34,7 +34,7 @@ class AuthController extends BaseController
 
             ]);
 
-            return redirect()->to('/Client/dashboard');
+            return redirect()->to('/client/dashboard');
         }
         catch(\Exception $e)
         {
@@ -55,7 +55,7 @@ class AuthController extends BaseController
             'numero'
         ]);
 
-        return redirect()->to('/Client/login');
+        return redirect()->to('/client/login');
     }
 
 }
