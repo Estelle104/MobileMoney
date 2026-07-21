@@ -7,6 +7,7 @@ use App\Controllers\BaseController;
 use App\Models\Client;
 use App\Models\Operation;
 use App\Models\BaremeFrais;
+use App\Models\Configuration;
 use App\Models\TypeOperation;
 use App\Models\Prefixe;
 use App\Models\PrefixeExterneModel;
@@ -297,6 +298,7 @@ class OperationController extends BaseController
         $baremeModel   = new BaremeFrais();
         $typeModel     = new TypeOperation();
         $prefixeModel  = new Prefixe();
+        $conf = new Configuration();
         $epargne = new Epargne();
 
         $idSource = session()->get('client_id');
@@ -348,19 +350,25 @@ class OperationController extends BaseController
 
         $idTransfert = $typeModel->getIdParLibelle('transfert');
         $idRetrait   = $typeModel->getIdParLibelle('retrait');
+        $fr = $baremeModel->getFraisParMontant($idTransfert, $montant) ?? 0;
+        
+        $pourc = $fr * $conf->getPourcentage() /100;
 
         // frais de transfert
-        $frais = $baremeModel->getFraisParMontant($idTransfert, $montant) ?? 0;
+        $frais = $fr - $pourc;
 
         // commission si externe
         if ($isExterne) {
             $frais += $montant * ($prefixeExterne['pourcentage_commission'] / 100);
         }
 
+
+
         // frais retrait optionnels (seulement si même opérateur)
         $fraisRetrait = 0;
         if (!$isExterne && $isMemeOperateur && $inclureFraisRetrait) {
             $fraisRetrait = $baremeModel->getFraisParMontant($idRetrait, $montant) ?? 0;
+
         }
 
         $totalDebit = $montant + $frais + $fraisRetrait;

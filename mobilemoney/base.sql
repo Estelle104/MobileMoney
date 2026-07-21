@@ -66,6 +66,12 @@ CREATE TABLE reglement_externe(
     FOREIGN KEY (id_operateur) REFERENCES operateur(id)
 );
 
+CREATE TABLE configuration (
+    id INT PRIMARY KEY,
+    pourcentage DECIMAL(10,2)
+);
+
+
 ALTER TABLE operation ADD COLUMN numero_destinataire_externe VARCHAR(20) NULL;
 ALTER TABLE operation ADD COLUMN id_prefixe_externe INT NULL,
   ADD FOREIGN KEY (id_prefixe_externe) REFERENCES prefixe_externe(id);
