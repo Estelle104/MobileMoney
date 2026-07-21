@@ -80,7 +80,7 @@ class PrefixeExterneController extends BaseController
         }
 
         $data = [
-            'id'                     => $id, // Important for is_unique custom rule if we pass id
+            'id'                     => $id, 
             'code'                   => $this->request->getPost('code'),
             'nom_operateur_externe'  => $this->request->getPost('nom_operateur_externe'),
             'pourcentage_commission' => $this->request->getPost('pourcentage_commission'),

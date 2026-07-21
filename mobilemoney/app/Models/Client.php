@@ -39,7 +39,7 @@ class Client extends Model
         $prefixe = $prefixeModel->where('code', $codePrefixe)->first();
 
         if (! $prefixe) {
-            return null; // préfixe inconnu -> numéro invalide
+            return null; 
         }
 
         $id = $this->insert([

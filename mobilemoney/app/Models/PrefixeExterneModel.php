@@ -59,9 +59,6 @@ class PrefixeExterneModel extends Model
 
     public function peutEtreSupprime(int $idPrefixeExterne): bool
     {
-        // À discuter : Actuellement, la table operation ne contient pas id_prefixe_externe.
-        // Si les numéros externes sont stockés sous forme de texte dans une autre table ou
-        // liés différemment, on ajoutera la vérification ici.
         return true;
     }
 }

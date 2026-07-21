@@ -142,6 +142,7 @@ class Operation extends Model
         return $builder->findAll();
     }
 
+    // Total des frais collectés par type d'opération et par destination (interne/externe), pour un opérateur, sur une période optionnelle.
     public function getTotalFraisParTypeEtDestination(int $idOperateur, ?string $dateDebut = null, ?string $dateFin = null): array
     {
         $builder = $this->select("
