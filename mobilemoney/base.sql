@@ -115,3 +115,9 @@ INSERT INTO operation (id, id_client_source, id_client_destinataire, id_type_ope
 (4, 4, 3, 3, 50000, 300, CURRENT_TIMESTAMP);
 
 
+CREATE TABLE epargne(
+    id INT PRIMARY KEY,
+    id_client INT,
+    pourcentage INT,
+    FOREIGN KEY (id_client) REFERENCES client(id)
+);

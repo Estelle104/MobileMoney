@@ -91,6 +91,10 @@ $routes->group('client', ['filter' => 'authClient'], function ($routes) {
     $routes->post('transfert-multiple/valider', 'Client\OperationController::validerTransfertMultiple');
 
     $routes->get('historique', 'Client\OperationController::historique');
+
+    $routes->get('enregistrer_epargne','Client\OperationController::viewEpargne');
+    $routes->post('enregistrer_epargne','Client\OperationController::insererEpargne');
+
     
     // AJAX
     $routes->post('calcul-frais', 'Client\OperationController::calculFraisAjax');

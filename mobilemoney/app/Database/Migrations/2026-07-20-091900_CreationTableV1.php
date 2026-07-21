@@ -75,6 +75,18 @@ class CreationTableV1 extends Migration
         $this->forge->addForeignKey('id_client_destinataire', 'client', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('id_type_operation', 'type_operation', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('operation', true);
+
+
+        // 3. Table Client
+        $this->forge->addField([
+            'id'         => ['type' => 'INT', 'auto_increment' => true],
+            'id_client'  => ['type' => 'INT'],
+            'pourcentage'      => ['type' => 'DECIMAL', 'constraint' => '10,2', 'default' => 0.00],
+            'created_at' => ['type' => 'DATETIME', 'null' => true],
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->addForeignKey('id_client', 'client', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->createTable('epargne', true);
     }
 
     public function down()

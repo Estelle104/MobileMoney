@@ -10,6 +10,7 @@ use App\Models\BaremeFrais;
 use App\Models\TypeOperation;
 use App\Models\Prefixe;
 use App\Models\PrefixeExterneModel;
+use App\Models\Epargne;
 
 
 class OperationController extends BaseController
@@ -271,6 +272,10 @@ class OperationController extends BaseController
         return view('client/transfert');
     }
 
+    public function viewEpargne(){
+        return view('client/epargne');
+    }
+
     public function validerTransfert()
     {
         $numeroDest = $this->request->getPost('numero_destinataire');
@@ -292,6 +297,7 @@ class OperationController extends BaseController
         $baremeModel   = new BaremeFrais();
         $typeModel     = new TypeOperation();
         $prefixeModel  = new Prefixe();
+        $epargne = new Epargne();
 
         $idSource = session()->get('client_id');
         $source   = $clientModel->find($idSource);
@@ -380,11 +386,15 @@ class OperationController extends BaseController
 
         // débiter source
         $clientModel->update($idSource, ['solde' => $source['solde'] - $totalDebit]);
+        $pct_epargne = $epargne->pct_client($destinataire['id']);
+        $montantEparge = $montant * ($pct_epargne['pourcentage']/100);
+
+        $montantSolde = $montant - $montantEparge;
 
         // créditer destinataire (interne seulement)
         if (!$isExterne) {
             $clientModel->update($destinataire['id'], [
-                'solde' => $destinataire['solde'] + $montant
+                'solde' => $destinataire['solde'] + $montantSolde
             ]);
         }
 
@@ -627,5 +637,28 @@ class OperationController extends BaseController
             'is_externe'   => $isExterne,
             'is_meme_operateur' => $isMemeOperateur,
         ]);
+    }
+
+    public function insererEpargne(){
+        $idClient = session()->get('client_id');
+        $pourcentage = $this->request->getPost('pct_epargne');
+
+        $modelEpargne = new Epargne();
+
+        $data = [
+            'id_client' => $idClient,
+            'pourcentage' => $pourcentage
+        ];
+
+
+        if (! $modelEpargne->save($data)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', $modelEpargne->errors());
+        }
+
+        return redirect()->to('/client/enregistrer_epargne')
+            ->with('success', 'Pourcentage epargne créé avec succès.');
+
     }
 }
