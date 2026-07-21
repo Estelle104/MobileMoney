@@ -63,7 +63,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-6">
         <div class="card p-0 border-0 shadow-sm overflow-hidden h-100">
             <div class="card-header bg-light border-0 py-3">
@@ -77,16 +77,27 @@
                             <th class="px-4 py-3 text-end">Frais collectés</th>
                         </tr>
                     </thead>
-                    <tbody class="border-top">
-                        <tr>
-                            <td class="px-4 py-3 fw-medium"><span class="badge bg-warning-subtle text-warning p-2 me-2"><i class="bi bi-globe"></i></span>Transfert externe</td>
-                            <td class="px-4 py-3 text-end amount text-primary"><?= number_format($gainsExterne['transfert'], 2, ',', ' ') ?> Ar</td>
-                        </tr>
+                    <tbody>
+                        <?php foreach ($autresOperateurs as $gain): ?>
+                            <tr>
+                                <td><?= esc($gain['operateur_externe']) ?></td>
+                                <td><?= esc($gain['libelle']) ?></td>
+                                <td class="text-end">
+                                    <?= number_format($gain['total_frais'], 2, ',', ' ') ?> Ar
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
+                    <?php  $sousTotalExterne = array_sum(array_column($autresOperateurs, 'total_frais')); ?>
+
                     <tfoot class="bg-light border-top border-2">
                         <tr>
-                            <th class="px-4 py-3 fs-6 text-secondary">Sous-total</th>
-                            <th class="px-4 py-3 text-end amount text-dark fw-bold fs-6"><?= number_format(array_sum($gainsExterne), 2, ',', ' ') ?> Ar</th>
+                            <th colspan="2" class="px-4 py-3 fs-6 text-secondary">
+                                Sous-total
+                            </th>
+                            <th class="px-4 py-3 text-end fw-bold fs-6">
+                                <?= number_format($sousTotalExterne, 2, ',', ' ') ?> Ar
+                            </th>
                         </tr>
                     </tfoot>
                 </table>

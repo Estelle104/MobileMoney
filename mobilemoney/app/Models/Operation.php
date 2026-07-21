@@ -33,11 +33,11 @@ class Operation extends Model
         if (isset($data['data']['id_type_operation'])) {
             $typeModel = new TypeOperation();
             $idTransfert = $typeModel->getIdParLibelle('transfert');
-            
+
             if ($data['data']['id_type_operation'] == $idTransfert) {
                 $hasInterne = !empty($data['data']['id_client_destinataire']);
                 $hasExterne = !empty($data['data']['numero_destinataire_externe']) && !empty($data['data']['id_prefixe_externe']);
-                
+
                 if ($hasInterne && $hasExterne) {
                     throw new \Exception("Un transfert ne peut pas avoir un destinataire interne et externe à la fois.");
                 }
@@ -184,5 +184,40 @@ class Operation extends Model
         }
 
         return $builder->findAll();
+    }
+
+    public function getGainsOperateursExternes($operateurId, $dateDebut = null, $dateFin = null)
+    {
+        $builder = $this->db->table('operation o');
+
+        $builder->select([
+            'pe.nom_operateur_externe AS operateur_externe',
+            't.libelle',
+            'SUM(o.frais) AS total_frais'
+        ]);
+
+        $builder->join('prefixe_externe pe', 'pe.id = o.id_prefixe_externe');
+        $builder->join('type_operation t', 't.id = o.id_type_operation');
+
+        // seulement les préfixes appartenant à l'opérateur connecté
+        $builder->where('pe.id_operateur', $operateurId);
+
+        // uniquement les opérations externes
+        $builder->where('o.id_prefixe_externe IS NOT NULL', null, false);
+
+        if ($dateDebut) {
+            $builder->where('DATE(o.date_transaction) >=', $dateDebut);
+        }
+
+        if ($dateFin) {
+            $builder->where('DATE(o.date_transaction) <=', $dateFin);
+        }
+
+        $builder->groupBy([
+            'pe.nom_operateur_externe',
+            't.libelle'
+        ]);
+
+        return $builder->get()->getResultArray();
     }
 }
