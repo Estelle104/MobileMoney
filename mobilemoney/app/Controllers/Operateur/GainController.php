@@ -7,12 +7,12 @@ use App\Models\Operation;
 
 class GainController extends BaseController
 {
-   
+
     public function index()
     {
         return $this->afficherGains();
     }
-    
+
     public function filtrer()
     {
         $dateDebut = $this->request->getGet('date_debut');
@@ -21,7 +21,7 @@ class GainController extends BaseController
         return $this->afficherGains($dateDebut, $dateFin);
     }
 
-   
+
     private function afficherGains(?string $dateDebut = null, ?string $dateFin = null)
     {
         $operationModel = new Operation();
@@ -37,7 +37,7 @@ class GainController extends BaseController
             'transfert' => 0,
             'depot'     => 0,
         ];
-        
+
         $gainsExterne = [
             'transfert' => 0,
         ];
@@ -57,12 +57,19 @@ class GainController extends BaseController
 
         $totalGeneral = array_sum($gainsInterne) + array_sum($gainsExterne);
 
+        $autresOperateurs = $operationModel->getGainsOperateursExternes(
+            session()->get('operateur_id'),
+            $dateDebut,
+            $dateFin
+        );
+
         return view('operateur/gains/index', [
-            'gainsInterne' => $gainsInterne,
-            'gainsExterne' => $gainsExterne,
-            'totalGeneral' => $totalGeneral,
-            'dateDebut'    => $dateDebut,
-            'dateFin'      => $dateFin,
+            'gainsInterne'     => $gainsInterne,
+            'gainsExterne'     => $gainsExterne,
+            'autresOperateurs' => $autresOperateurs,
+            'totalGeneral'     => $totalGeneral,
+            'dateDebut'        => $dateDebut,
+            'dateFin'          => $dateFin,
         ]);
     }
 }
